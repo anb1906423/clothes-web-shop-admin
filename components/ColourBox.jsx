@@ -1,33 +1,30 @@
 import React, { useState, useEffect } from 'react'
 import Multiselect from 'multiselect-react-dropdown';
-import axios from 'axios'
+//import axios from 'axios'
+let fakeData = [ { colour_id: '001', colour_name: 'Trắng' }, { colour_id: '002', colour_name: 'Đen' }, 
+                { colour_id: '003', colour_name: 'Xám' }, { colour_id: '001', colour_name: 'Xanh' }, ];
 
-const ColourBox = (props) => {
+const ColourBox = ({ selectedColour, setSelectedColour }) => {
     
-    let [listColour, setListColour] = useState([]);
-    let [selectedValue, setSelectedValue] = useState([]);
-    useEffect(() => {
-        const getColourList = async () => {
-            const result = await axios.get('http://localhost:8080/api/colour/list')
-            console.log(result.data);
-            setListColour(result.data)
-        }
-        getColourList()
-    }, [])
-    const onSelect = (selected) => {
-        setSelectedValue(selected)
-    }
-    const onRemove = (selected) => {
-        setSelectedValue(selected)
-    }
+    let [listColour, setListColour] = useState(fakeData);
+    
+    // useEffect(() => {
+    //     const getColourList = async () => {
+    //         const result = await axios.get('http://localhost:8080/api/colour/list')
+    //         console.log(result.data);
+    //         setListColour(result.data)
+    //     }
+    //     getColourList()
+    // }, [])
+
     return (
         <div className="colour-box">
             <span className="fw-bold">Màu:</span>
             <Multiselect
                 options={listColour} // Options to display in the dropdown
-                selectedValues={selectedValue} // Preselected value to persist in dropdown
-                onSelect={onSelect} // Function will trigger on select event
-                onRemove={onRemove} // Function will trigger on remove event
+                selectedValues={selectedColour} // Preselected value to persist in dropdown
+                onSelect={setSelectedColour} // Function will trigger on select event
+                onRemove={setSelectedColour} // Function will trigger on remove event
                 displayValue="colour_name" 
                 hidePlaceholder = {true} // HideProperty name to display in the dropdown options
             />

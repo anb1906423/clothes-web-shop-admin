@@ -1,7 +1,16 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { menu } from '../data/data'
 
 const Section = () => {
+    const [showMenuItem, setShowMenuItem] = useState({})
+
+    const handleClick = index => {
+        setShowMenuItem({
+            ...showMenuItem,
+            [index]: !showMenuItem[index]
+        })
+    }
+
     return (
         <div className='section w-100'>
             <div className="logo-box text-center">
@@ -12,24 +21,29 @@ const Section = () => {
                     menu && menu.map((item, index) => {
                         return (
                             <li className='menu-item text-uppercase fw-bold' key={index}>
-                                <a className='w-100' href={item.href}>{item.title}</a>
-                                <ul className='sub-menu position-absolute w-100'>
-                                    {
-                                        item.list && item.list.map((listItem, i) => {
-                                            return (
-                                                <li key={i} className='w-100'>
-                                                    <a
-                                                        href={listItem.href}
-                                                        className="w-100"
-                                                    >
+                                <a onClick={() => handleClick(index)} className='w-100' href={item.href}>{item.title}</a>
+                                {
+                                    showMenuItem[index] && (
 
-                                                        {listItem.title}
-                                                    </a>
-                                                </li>
-                                            )
-                                        })
-                                    }
-                                </ul>
+                                        <ul className='sub-menu position-absolute w-100'>
+                                            {
+                                                item.list && item.list.map((listItem, i) => {
+                                                    return (
+                                                        <li key={i} className='w-100'>
+                                                            <a
+                                                                href={listItem.href}
+                                                                className="w-100"
+                                                            >
+
+                                                                {listItem.title}
+                                                            </a>
+                                                        </li>
+                                                    )
+                                                })
+                                            }
+                                        </ul>
+                                    )
+                                }
                             </li>
                         )
                     })

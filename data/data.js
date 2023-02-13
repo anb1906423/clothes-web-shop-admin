@@ -14,8 +14,15 @@ export const menu = [
         ],
     },
     {
+        title: 'Quản lý sản phẩm',
+        href: '/quan-ly-san-pham',
+        list: [
+            
+        ],
+    },
+    {
         title: 'Quản lý danh mục',
-        href: '/quan-ly-danh-muc',
+        href: '#',
         list: [
             {
                 title: 'Áo thun nam',

@@ -4,15 +4,15 @@ import ColourBox from '@/components/ColourBox'
 import SizeBox from '@/components/SizeBox'
 import Category from '@/components/Category'
 import RowItem from '@/components/RowItem'
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import CKeditor from '@/components/CKEditor';
 
 const CreateNewProduct = () => {
     const [nameProduct, setNameProduct] = useState('')
     const [selectedColour, setSelectedColour] = useState([]);
     const [selectedSize, setSelectedSize] = useState([]);
     const [description, setDescription] = useState('')
-    
+    const [editorLoaded, setEditorLoaded] = useState(false);
+
     const nameProductRef = useRef();
 
     const selectedSizeItem = selectedSize.map((size, index) => {
@@ -32,6 +32,10 @@ const CreateNewProduct = () => {
     const showSizeList = () => {
         console.log(selectedSize);
     }
+
+    useEffect(() => {
+        setEditorLoaded(true);
+    }, []);
 
     return (
         <div className='add-product-page'>
@@ -61,23 +65,16 @@ const CreateNewProduct = () => {
                 <div className="description">
                     <label htmlFor='enter-name' className="fw-bold">Mô tả sản phẩm:</label>
                     <div className="ckeditor-box">
-                        <CKEditor
-                            editor={ClassicEditor}
+                        <CKeditor
+                            Placeholder={{ placeholder: "Mô tả ..." }}
+                            name="description"
+                            id="description"
+                            form="add-product-form"
                             data={description}
-                            onReady={editor => {
-                                // You can store the "editor" and use when it is needed.
-                                console.log('Editor is ready to use!', editor);
+                            onChange={(data) => {
+                                setDescription(data);
                             }}
-                            onChange={(event, editor) => {
-                                const data = editor.getData();
-                                console.log({ event, editor, data });
-                            }}
-                            onBlur={(event, editor) => {
-                                console.log('Blur.', editor);
-                            }}
-                            onFocus={(event, editor) => {
-                                console.log('Focus.', editor);
-                            }}
+                            editorLoaded={editorLoaded}
                         />
                     </div>
                 </div>

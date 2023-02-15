@@ -1,0 +1,38 @@
+.add-product-page {
+    margin-right: 8px;
+    .searchWrapper {
+        max-height: 38.33px;
+        overflow: hidden;
+        overflow-y: scroll;
+        margin-top: 4px;
+        margin-bottom: 5px;
+        border: 1px solid #000;
+    }
+    .searchWrapper::-webkit-scrollbar {
+        width: 0;
+        background-color: #F5F5F5;
+    }
+    #enter-name {
+        padding: 5px;
+        margin-top: 3px;
+        margin-bottom: 4px;
+        border-radius: 4px;
+        border: 1px solid #000;
+    }
+    .ckeditor-box {
+        margin-top: 4px;
+        margin-bottom: 5px;
+    }
+    .btn-box {
+        margin: 16px 0;
+        button {
+            padding: 4px 16px;
+            border: 1px solid #000;
+            border-radius: 4px;
+            background: #66BB6A;
+        }
+        button:hover {
+            opacity: .8;
+        }
+    }
+}

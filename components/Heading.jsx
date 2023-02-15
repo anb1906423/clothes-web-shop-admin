@@ -8,7 +8,7 @@ const Heading = (props) => {
                 margin: "12px"
             }}
         >
-            {props.title}
+            <h6>{props.title}</h6>
         </div>
     )
 }

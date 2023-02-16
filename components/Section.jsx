@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { menu } from '../data/data'
+import router from 'next/router'
 
 const Section = () => {
     const [showMenuItem, setShowMenuItem] = useState({})
@@ -20,8 +21,8 @@ const Section = () => {
                 {
                     menu && menu.map((item, index) => {
                         return (
-                            <li className='menu-item text-uppercase fw-bold' key={index}>
-                                <a onClick={() => handleClick(index)} className='w-100' href={item.href}>{item.title}</a>
+                            <li onClick={() => router.push(item.href)} className='menu-item text-uppercase fw-bold' key={index}>
+                                <a onClick={() => handleClick(index)} className='w-100' href="#">{item.title}</a>
                                 {
                                     showMenuItem[index] && (
 
@@ -29,9 +30,9 @@ const Section = () => {
                                             {
                                                 item.list && item.list.map((listItem, i) => {
                                                     return (
-                                                        <li key={i} className='w-100'>
+                                                        <li onClick={() => router.push(listItem.href)} key={i} className='w-100'>
                                                             <a
-                                                                href={listItem.href}
+                                                                href='#'
                                                                 className="w-100"
                                                             >
 

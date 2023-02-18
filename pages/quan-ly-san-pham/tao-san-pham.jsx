@@ -97,7 +97,7 @@ const CreateNewProduct = () => {
                     <label htmlFor='enter-name' className="fw-bold">Danh sách lựa chọn:</label>
                     <table className="table table-hover">
                         <thead>
-                            <tr>
+                            <tr className=''>
                                 <th scope="col">Màu</th>
                                 <th scope="col">Size</th>
                                 <th scope="col">Giá bán</th>

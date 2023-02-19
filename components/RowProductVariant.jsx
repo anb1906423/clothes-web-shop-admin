@@ -83,7 +83,7 @@ const RowProductVariant = ({ product_id, colour, size, product_image, isSubmit }
                         data-product_id={product_id}
                     />
                     <label htmlFor="img-upload" className={imageURL !== '' ? 'd-none' : 'img-upload'}>
-                        <FaArrowAltCircleUp />
+                        {/* <FaArrowAltCircleUp /> */}
                     </label>
                     {imageURL && <img src={imageURL} alt="uploaded image" />}
                 </td>

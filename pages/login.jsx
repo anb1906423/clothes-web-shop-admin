@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Heading from '@/components/Heading'
 const login = () => {
+
     const usernameRef = useRef()
+    
     useEffect(() => {
         usernameRef.current.focus()
     }, [])
@@ -12,7 +14,7 @@ const login = () => {
                 <form action="">
                     <div className="w-100">
                         <input
-                            placeholder="Username"
+                            placeholder="Email"
                             className='w-100'
                             type="text"
                             ref={usernameRef}

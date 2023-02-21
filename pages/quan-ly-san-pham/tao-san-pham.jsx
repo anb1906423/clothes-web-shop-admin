@@ -5,7 +5,7 @@ import ColourBox from '@/components/ColourBox'
 import SizeBox from '@/components/SizeBox'
 import Category from '@/components/Category'
 import RowProductVariant from '@/components/RowProductVariant'
-import CKeditor from '@/components/CKEditor';
+import CKeditor from '@/components/CKEditor'
 
 const CreateNewProduct = () => {
     const [product_id, setProduct_id] = useState('');

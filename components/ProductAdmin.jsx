@@ -1,13 +1,16 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import Link from 'next/link'
 import axios from 'axios'
 import { swalert, swtoast, showPriceInputDialog } from "../mixins/swal.mixin";
-import { homeAPI } from "../config"
-import { FaTrash, FaEdit, FaPencilAlt } from "react-icons/fa"
+import { FaTrash, FaPencilAlt } from "react-icons/fa"
 import { Switch } from 'antd';
 import Swal from "sweetalert2";
 
 const ProductAdmin = (props) => {
+
+    const addPointToPrice = (price) => {
+        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
 
     const convertTime = (created_at) => {
         const date = new Date(created_at);
@@ -23,34 +26,105 @@ const ProductAdmin = (props) => {
         return formattedDateTime
     }
 
-    const onChange = (checked) => {
-        console.log(`switch to ${checked}`);
-    };
-
-    const addPointToPrice = (price) => {
-        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    }
-
     const handleUpdatePrice = async () => {
-        const { value: price } = await Swal.fire({
+        const { value: newPrice } = await Swal.fire({
             title: 'Nhập giá mới',
-            input: 'text',
+            input: 'number',
             inputLabel: '',
             inputPlaceholder: 'Giá mới..',
             showCloseButton: true,
         })
-        if (!price) {
+        if (!newPrice) {
             swtoast.fire({
                 text: "Giá sản phẩm chưa được cập nhật!"
             })
             return
         }
-        if (price) {
-            swtoast.success({
-                text: 'Cập nhật giá mới thành công!'
-            })
+        if (newPrice) {
+            try {
+                await axios.put('http://localhost:8080/api/product-variant/update-price',
+                {  
+                    product_variant_ids: [ props.product_variant_id ],
+                    price: newPrice
+                })
+                props.refreshProductVariantTable()
+                swtoast.success({
+                    text: 'Cập nhật giá mới thành công!'
+                })
+            } catch(e) {
+                console.log(e)
+                swtoast.error({
+                    text: 'Xảy ra lỗi khi cập nhật giá vui lòng thử lại!'
+                })
+            }
         }
     }
+
+    const handleUpdateQuantity = async () => {
+        const { value: newQuantity } = await Swal.fire({
+            title: 'Nhập tồn kho mới',
+            input: 'number',
+            inputLabel: '',
+            inputPlaceholder: 'Tồn kho mới..',
+            showCloseButton: true,
+        })
+        if (!newQuantity) {
+            swtoast.fire({
+                text: "Tồn kho sản phẩm chưa được cập nhật!"
+            })
+            return
+        }
+        if (newQuantity) {
+            try {
+                await axios.put('http://localhost:8080/api/product-variant/update-quantity',
+                {  
+                    product_variant_ids: [ props.product_variant_id ],
+                    quantity: newQuantity
+                })
+                props.refreshProductVariantTable()
+                swtoast.success({
+                    text: 'Cập nhật tồn kho mới thành công!'
+                })
+            } catch(e) {
+                console.log(e)
+                swtoast.error({
+                    text: 'Xảy ra lỗi khi cập nhật tồn kho vui lòng thử lại!'
+                })
+            }
+        }
+    }
+
+    const [disabledInputState, setDisabledInputState] = useState(false);
+    
+    const handleUpdateState = async (state) => {
+        if(state) {
+            try {
+                setDisabledInputState(true)
+                await axios.put('http://localhost:8080/api/product-variant/on',
+                { product_variant_ids: [ props.product_variant_id ] })
+                setDisabledInputState(false)
+                props.refreshProductVariantTable()
+            } catch(e) {
+                console.log(e)
+                props.refreshProductVariantTable()
+                setDisabledInputState(false)
+                swtoast.error( {text: 'Xảy ra lỗi khi mở bán vui lòng thử lại!'} )
+            }
+        } else {
+            try {
+                setDisabledInputState(true)
+                await axios.put('http://localhost:8080/api/product-variant/off',
+                { product_variant_ids: [ props.product_variant_id ] })
+                setDisabledInputState(false)
+                props.refreshProductVariantTable()
+            } catch(e) {
+                console.log(e)
+                props.refreshProductVariantTable()
+                setDisabledInputState(false)
+                swtoast.error( {text: 'Xảy ra lỗi khi tắt sản phẩm vui lòng thử lại!'} )
+            }
+        }
+    };
 
     return (
         <div className="table-responsive">
@@ -64,7 +138,7 @@ const ProductAdmin = (props) => {
                             <p className="name">
                                 {props.product_name + '-' + props.colour_name + '-' + props.size_name}
                             </p>
-                            <img src={'http://localhost:8080/static' + props.product_image} alt="" />
+                            <img src={props.product_image} />
                         </td>
                         <td className="text-danger fw-bold col-price">
                             <p className='d-flex align-items-center justify-content-center'>
@@ -76,17 +150,26 @@ const ProductAdmin = (props) => {
                                 </a>
                             </p>
                         </td>
-                        <td className="text-danger fw-bold col-quantity"><p>{props.quantity}</p></td>
+                        <td className="text-danger fw-bold col-quantity">
+                            <p className='d-flex align-items-center justify-content-center'>
+                                {props.quantity}
+                                <a href="#" onClick={handleUpdateQuantity}>
+                                    <span className="edit-price-button text-premium">
+                                        <FaPencilAlt />
+                                    </span>
+                                </a>
+                            </p>
+                        </td>
                         <td className="col-createAt">
                             <p>{convertTime(props.created_at)}</p>
                         </td>
                         <td className="text-danger fw-bold col-state">
-                            <Switch defaultChecked={props.state} onChange={onChange} />
+                            <Switch checked={props.state} onChange={handleUpdateState} disabled={disabledInputState}/>
                         </td>
                         <td className="col-action manipulation">
                             <a href="#">Chỉnh sửa</a>
                             <br />
-                            <FaTrash title='Xóa' className="text-danger" onClick={() => deleteProduct(props.href)} />
+                            <FaTrash title='Xóa' className="text-danger"/>
                         </td>
                     </tr>
                 </tbody>

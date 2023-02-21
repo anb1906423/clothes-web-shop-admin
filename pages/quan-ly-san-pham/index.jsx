@@ -4,7 +4,6 @@ import Heading from '@/components/Heading'
 import ProductAdmin from '@/components/ProductAdmin'
 import Router from 'next/router'
 import axios from 'axios'
-import { productsList } from '../../data/data'
 
 const fakeData = [
     {
@@ -26,17 +25,20 @@ const fakeData = [
 ];
 
 const ProductManager = () => {
-    //console.log(productsList);
     let [listProductVariant, setListProductVariant] = useState(fakeData);
 
     useEffect(() => {
         const getListProductVariant = async () => {
             const result = await axios.get('http://localhost:8080/api/product/admin/list')
-            console.log(result.data)
             setListProductVariant(result.data)
         }
         getListProductVariant()
     }, [])
+
+    const refreshProductVariantTable = async () => {
+        const result = await axios.get('http://localhost:8080/api/product/admin/list')
+        setListProductVariant(result.data)
+    }
 
     return (
         <div className="product-manager">
@@ -81,6 +83,7 @@ const ProductManager = () => {
                                     quantity={productVariant.quantity}
                                     state={productVariant.state}
                                     created_at={productVariant.created_at}
+                                    refreshProductVariantTable={refreshProductVariantTable}
                                 />
                             )
                         })

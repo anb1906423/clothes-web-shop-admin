@@ -25,16 +25,16 @@ export const menu = [
         href: '#',
         list: [
             {
-                title: 'Áo thun nam',
-                href: '/quan-ly-danh-muc/ao-thun-nam'
+                title: 'Màu sắc',
+                href: '/quan-ly-danh-muc/mau-sac'
             },
             {
-                title: 'Quần thun nam',
-                href: '/quan-ly-danh-muc/quan-thun-nam'
+                title: 'Bảng size',
+                href: '/quan-ly-danh-muc/bang-size'
             },
             {
-                title: 'Quần lót nam',
-                href: '/quan-ly-danh-muc/quan-lot-nam'
+                title: 'Comments',
+                href: '/quan-ly-danh-muc/comments'
             },
         ],
     },

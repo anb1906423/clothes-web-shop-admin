@@ -28,7 +28,7 @@ const CreateNewProduct = () => {
             console.log(product.data);
             setProduct_id(product.data.product_id);
             setIsSubmit(true);
-        } catch(e) {
+        } catch (e) {
             console.log(e);
         }
     }
@@ -41,7 +41,7 @@ const CreateNewProduct = () => {
 
     for (let i in selectedColour) {
         for (let y in selectedSize) {
-            rowProductVariant.push(<RowProductVariant key={i+'-'+y} product_id={product_id} colour={selectedColour[i]} size={selectedSize[y]} isSubmit={isSubmit}/>)
+            rowProductVariant.push(<RowProductVariant key={i + '-' + y} product_id={product_id} colour={selectedColour[i]} size={selectedSize[y]} isSubmit={isSubmit} />)
         }
     }
 

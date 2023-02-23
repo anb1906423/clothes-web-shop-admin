@@ -43,15 +43,15 @@ const ProductAdmin = (props) => {
         if (newPrice) {
             try {
                 await axios.put('http://localhost:8080/api/product-variant/update-price',
-                {  
-                    product_variant_ids: [ props.product_variant_id ],
-                    price: newPrice
-                })
+                    {
+                        product_variant_ids: [props.product_variant_id],
+                        price: newPrice
+                    })
                 props.refreshProductVariantTable()
                 swtoast.success({
                     text: 'Cập nhật giá mới thành công!'
                 })
-            } catch(e) {
+            } catch (e) {
                 console.log(e)
                 swtoast.error({
                     text: 'Xảy ra lỗi khi cập nhật giá vui lòng thử lại!'
@@ -77,15 +77,15 @@ const ProductAdmin = (props) => {
         if (newQuantity) {
             try {
                 await axios.put('http://localhost:8080/api/product-variant/update-quantity',
-                {  
-                    product_variant_ids: [ props.product_variant_id ],
-                    quantity: newQuantity
-                })
+                    {
+                        product_variant_ids: [props.product_variant_id],
+                        quantity: newQuantity
+                    })
                 props.refreshProductVariantTable()
                 swtoast.success({
                     text: 'Cập nhật tồn kho mới thành công!'
                 })
-            } catch(e) {
+            } catch (e) {
                 console.log(e)
                 swtoast.error({
                     text: 'Xảy ra lỗi khi cập nhật tồn kho vui lòng thử lại!'
@@ -95,36 +95,64 @@ const ProductAdmin = (props) => {
     }
 
     const [disabledInputState, setDisabledInputState] = useState(false);
-    
+
     const handleUpdateState = async (state) => {
-        if(state) {
+        if (state) {
             try {
                 setDisabledInputState(true)
                 await axios.put('http://localhost:8080/api/product-variant/on',
-                { product_variant_ids: [ props.product_variant_id ] })
+                    { product_variant_ids: [props.product_variant_id] })
                 setDisabledInputState(false)
                 props.refreshProductVariantTable()
-            } catch(e) {
+            } catch (e) {
                 console.log(e)
                 props.refreshProductVariantTable()
                 setDisabledInputState(false)
-                swtoast.error( {text: 'Xảy ra lỗi khi mở bán vui lòng thử lại!'} )
+                swtoast.error({ text: 'Xảy ra lỗi khi mở bán vui lòng thử lại!' })
             }
         } else {
             try {
                 setDisabledInputState(true)
                 await axios.put('http://localhost:8080/api/product-variant/off',
-                { product_variant_ids: [ props.product_variant_id ] })
+                    { product_variant_ids: [props.product_variant_id] })
                 setDisabledInputState(false)
                 props.refreshProductVariantTable()
-            } catch(e) {
+            } catch (e) {
                 console.log(e)
                 props.refreshProductVariantTable()
                 setDisabledInputState(false)
-                swtoast.error( {text: 'Xảy ra lỗi khi tắt sản phẩm vui lòng thử lại!'} )
+                swtoast.error({ text: 'Xảy ra lỗi khi tắt sản phẩm vui lòng thử lại!' })
             }
         }
     };
+
+    const handleDelete = async () => {
+        swalert
+            .fire({
+                title: "Xóa biến thể sản phẩm",
+                icon: "warning",
+                text: "Bạn muốn xóa biến thể sản phẩm này?",
+                showCloseButton: true,
+                showCancelButton: true,
+            })
+            .then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        await axios.delete('http://localhost:8080/api/product-variant/delete',
+                            { data: { product_variant_ids: [props.product_variant_id] }})
+                        props.refreshProductVariantTable()
+                        swtoast.success({
+                            text: 'Xóa biến thể sản phẩm thành công!'
+                        })
+                    } catch (err) {
+                        console.log(err)
+                        swtoast.error({
+                            text: 'Xảy ra lỗi khi xóa biến thể sản phẩm vui lòng thử lại!'
+                        })
+                    }
+                }
+            })
+    }
 
     return (
         <div className="table-responsive">
@@ -164,12 +192,12 @@ const ProductAdmin = (props) => {
                             <p>{convertTime(props.created_at)}</p>
                         </td>
                         <td className="text-danger fw-bold col-state">
-                            <Switch checked={props.state} onChange={handleUpdateState} disabled={disabledInputState}/>
+                            <Switch checked={props.state} onChange={handleUpdateState} disabled={disabledInputState} />
                         </td>
                         <td className="col-action manipulation">
                             <a href="#">Chỉnh sửa</a>
                             <br />
-                            <FaTrash title='Xóa' className="text-danger"/>
+                            <FaTrash style={{cursor: "pointer"}} title='Xóa' className="text-danger" onClick={() => handleDelete()} />
                         </td>
                     </tr>
                 </tbody>

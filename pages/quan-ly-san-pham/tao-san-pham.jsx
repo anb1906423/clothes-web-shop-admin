@@ -1,47 +1,75 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import Header from '@/components/Header'
-import ColourBox from '@/components/ColourBox'
-import SizeBox from '@/components/SizeBox'
-import Category from '@/components/Category'
-import RowProductVariant from '@/components/RowProductVariant'
-import CKeditor from '@/components/CKEditor'
+
+import Header from '@/components/Header';
+import ColourBox from '@/components/ColourBox';
+import SizeBox from '@/components/SizeBox';
+import Category from '@/components/Category';
+import RowProductVariant from '@/components/RowProductVariant';
+import CKeditor from '@/components/CKEditor';
 
 const CreateNewProduct = () => {
-    const [product_id, setProduct_id] = useState('');
     const [product_name, setProduct_name] = useState('');
     const [category_id, setCategory_id] = useState('');
+    const [price, setPrice] = useState(0);
     const [description, setDescription] = useState('')
-    const [selectedColour, setSelectedColour] = useState([]);
-    const [selectedSize, setSelectedSize] = useState([]);
-    const [isSubmit, setIsSubmit] = useState(false);
+    const [selectedColours, setSelectedColours] = useState([]);
+    const [selectedSizes, setSelectedSizes] = useState([]);
     const [editorLoaded, setEditorLoaded] = useState(false);
 
-    const createProduct = async () => {
-        try {
-            let newProduct = {
-                product_name,
-                category_id,
-                description
-            }
-            let product = await axios.post('http://localhost:8080/api/product/create', newProduct);
-            console.log(product.data);
-            setProduct_id(product.data.product_id);
-            setIsSubmit(true);
-        } catch (e) {
-            console.log(e);
-        }
-    }
+    const [listProductVariant, setListProductVariant] = useState([]);
+    const [rowProductVariant, setRowProductVariant] = useState([]);
 
     useEffect(() => {
         setEditorLoaded(true);
     }, []);
 
-    const rowProductVariant = []
+    useEffect(() => {
+        let listProductVariantTemp = [];
+        for (let i in selectedColours) {
+            for (let y in selectedSizes) {
+                let productVariant = {
+                    colour_id: selectedColours[i].colour_id,
+                    colour_name: selectedColours[i].colour_name,
+                    size_id: selectedSizes[y].size_id,
+                    size_name: selectedSizes[y].size_name,
+                    quantity: '',
+                    fileList: []
+                }
+                listProductVariantTemp.push(productVariant);
+            }
+        }
+        setListProductVariant(listProductVariantTemp);
+        
+    }, [selectedColours, selectedSizes]);
 
-    for (let i in selectedColour) {
-        for (let y in selectedSize) {
-            rowProductVariant.push(<RowProductVariant key={i + '-' + y} product_id={product_id} colour={selectedColour[i]} size={selectedSize[y]} isSubmit={isSubmit} />)
+    useEffect(() => {
+        let rowProductVariantTemp = [];
+        for (let i in listProductVariant) {
+            rowProductVariantTemp.push(
+                <RowProductVariant 
+                    key={i} 
+                    index={i}
+                    listProductVariant={listProductVariant}
+                    setListProductVariant={setListProductVariant}
+                />
+            );
+        }
+        setRowProductVariant(rowProductVariantTemp);
+    }, [ listProductVariant ]);
+
+    const createProduct = async () => {
+        try {
+            let newProduct = {
+                product_name,
+                price,
+                category_id,
+                description
+            }
+            let product = await axios.post('http://localhost:8080/api/product/create', newProduct);
+            console.log(product.data);
+        } catch (err) {
+            console.log(err);
         }
     }
 
@@ -50,9 +78,9 @@ const CreateNewProduct = () => {
             <Header title="Add Product" />
             {/* // Input Ten san pham */}
             <div className="add-product-form">
-                <div className="row name-product-box">
-                    <label htmlFor='enter-name' className="fw-bold">Tên sản phẩm:</label>
+                <div className="name-product-box row">
                     <div className="col-6">
+                        <label htmlFor='enter-name' className="fw-bold">Tên sản phẩm:</label>
                         <input
                             id='enter-name'
                             type="text"
@@ -64,8 +92,20 @@ const CreateNewProduct = () => {
                 </div>
                 {/* // Component danh muc */}
                 <div className="category-box row">
-                    <label htmlFor='enter-name' className="fw-bold">Danh mục:</label>
-                    <Category category_id={category_id} setCategory_id={setCategory_id} />
+                    <div className="col-6">
+                        <label htmlFor='enter-name' className="fw-bold">Danh mục:</label>
+                        <Category category_id={category_id} setCategory_id={setCategory_id} />
+                    </div>
+                    <div className="col-6">
+                        <label htmlFor='enter-price' className="fw-bold">Giá sản phẩm:</label>
+                        <input
+                            id='enter-name'
+                            type="number" min={0} max={10000000}
+                            className="w-100"
+                            placeholder='Nhập giá sản phẩm'
+                            onChange={(e) => setPrice(e.target.value)}
+                        />
+                    </div>
                 </div>
                 {/* // Mo ta san pham = CKEditor */}
                 <div className="description">
@@ -86,10 +126,10 @@ const CreateNewProduct = () => {
                 </div>
                 <div className="row">
                     <div className="col-6">
-                        <ColourBox selectedColour={selectedColour} setSelectedColour={setSelectedColour} />
+                        <ColourBox selectedColours={selectedColours} setSelectedColours={setSelectedColours} />
                     </div>
                     <div className="col-6">
-                        <SizeBox selectedSize={selectedSize} setSelectedSize={setSelectedSize} />
+                        <SizeBox selectedSizes={selectedSizes} setSelectedSizes={setSelectedSizes} />
                     </div>
                 </div>
                 {/* dung Selected colour va Seleted size de tao bang Product-Variant */}
@@ -98,9 +138,9 @@ const CreateNewProduct = () => {
                     <table className="table table-hover">
                         <thead>
                             <tr className=''>
+                                <th scope="col"><input type="checkbox"/></th>
                                 <th scope="col">Màu</th>
                                 <th scope="col">Size</th>
-                                <th scope="col">Giá bán</th>
                                 <th scope="col">Tồn kho</th>
                                 <th scope="col">Ảnh</th>
                             </tr>

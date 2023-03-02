@@ -1,31 +1,31 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const fakeData = [
     {
-        category_id: '001',
+        category_id: 1,
         title: 'Áo Nam',
         children: [
             {
-                category_id: '011',
+                category_id: 3,
                 title: 'Áo T-Shirt'
             },
             {
-                category_id: '012',
+                category_id: 4,
                 title: 'Áo Polo'
             }
         ]
     },
     {
-        category_id: '002',
+        category_id: 2,
         title: 'Quần Nam',
         children: [
             {
-                category_id: '021',
+                category_id: 5,
                 title: 'Quần Short'
             },
             {
-                category_id: '022',
+                category_id: 6,
                 title: 'Quần Jeans'
             }
         ]
@@ -33,12 +33,17 @@ const fakeData = [
 ];
 
 const Category = ({ category_id, setCategory_id }) => {
-    const [category, setCategory] = useState(fakeData)
+    const [listCategory, setListCategory] = useState([])
 
     useEffect(() => {
         const fetchCategory = async () => {
-            const result = await axios.get('http://localhost:8080/api/category/list-all');
-            setCategory(result.data)
+            try {
+                const result = await axios.get('http://localhost:8080/api/category/list-all');
+                setListCategory(result.data)
+            } catch(err) {
+                console.log(err);
+                setListCategory(fakeData);
+            }
         }
 
         fetchCategory()
@@ -50,7 +55,7 @@ const Category = ({ category_id, setCategory_id }) => {
                 <select value={category_id} onChange={(e) => setCategory_id(e.target.value)}>
                 <option disabled={true} value="">--Chọn danh mục sản phẩm--</option>
                     {
-                        category && category.map((item, index) => {
+                        listCategory && listCategory.map((item, index) => {
                             return (
                                 <optgroup key={index} label={item.title}>
                                     {

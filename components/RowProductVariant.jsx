@@ -46,10 +46,6 @@ const RowProductVariant = ({ index, listProductVariant, setListProductVariant })
                     <input type="number" value={listProductVariant[index].quantity} onChange={handlePriceChance} />
                 </td>
                 <td className="d-flex justify-content-left align-items-center">
-                    {/* <input                        
-                        type="file"
-                        multiple ref={inputImageFile}
-                    /> */}
                     <UploadImageBoxox 
                         index={index}
                         listProductVariant={listProductVariant}

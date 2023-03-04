@@ -25,14 +25,19 @@ const fakeData = [
 ];
 
 const ProductManager = () => {
-    let [listProductVariant, setListProductVariant] = useState(fakeData);
+    let [listProductVariant, setListProductVariant] = useState([]);
 
     useEffect(() => {
         const getListProductVariant = async () => {
-            const result = await axios.get('http://localhost:8080/api/product/admin/list')
-            setListProductVariant(result.data)
+            try {
+                const result = await axios.get('http://localhost:8080/api/product/admin/list')
+                setListProductVariant(result.data)
+            } catch(err) {
+                console.log(err);
+                setListProductVariant(fakeData);
+            }
         }
-        getListProductVariant()
+        getListProductVariant();
     }, [])
 
     const refreshProductVariantTable = async () => {

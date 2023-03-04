@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import Router from 'next/router';
 
 import Header from '@/components/Header';
 import ColourBox from '@/components/ColourBox';
@@ -66,8 +67,27 @@ const CreateNewProduct = () => {
                 category_id,
                 description
             }
-            let product = await axios.post('http://localhost:8080/api/product/create', newProduct);
-            console.log(product.data);
+            let result = await axios.post('http://localhost:8080/api/product/create', newProduct);
+            console.log(result.data);
+            let product_id = result.data.product_id;
+            for (let productVariant of listProductVariant) {
+                let dataProductVariant = new FormData();
+                dataProductVariant.append('product_id', product_id);
+                dataProductVariant.append('colour_id', productVariant.colour_id);
+                dataProductVariant.append('size_id', productVariant.size_id);
+                dataProductVariant.append('quantity', productVariant.quantity);
+                for (let file of productVariant.fileList)
+                    dataProductVariant.append('product_images', file.originFileObj);
+                let result = await axios.post(
+                    'http://localhost:8080/api/product-variant/create',
+                    dataProductVariant,
+                    {
+                        headers: { 'Content-Type': 'multipart/form-data' }
+                    }
+                );
+                console.log(result.data);
+            }
+            Router.push('/quan-ly-san-pham');
         } catch (err) {
             console.log(err);
         }

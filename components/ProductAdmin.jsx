@@ -26,40 +26,6 @@ const ProductAdmin = (props) => {
         return formattedDateTime
     }
 
-    const handleUpdatePrice = async () => {
-        const { value: newPrice } = await Swal.fire({
-            title: 'Nhập giá mới',
-            input: 'number',
-            inputLabel: '',
-            inputPlaceholder: 'Giá mới..',
-            showCloseButton: true,
-        })
-        if (!newPrice) {
-            swtoast.fire({
-                text: "Giá sản phẩm chưa được cập nhật!"
-            })
-            return
-        }
-        if (newPrice) {
-            try {
-                await axios.put('http://localhost:8080/api/product-variant/update-price',
-                    {
-                        product_variant_ids: [props.product_variant_id],
-                        price: newPrice
-                    })
-                props.refreshProductVariantTable()
-                swtoast.success({
-                    text: 'Cập nhật giá mới thành công!'
-                })
-            } catch (e) {
-                console.log(e)
-                swtoast.error({
-                    text: 'Xảy ra lỗi khi cập nhật giá vui lòng thử lại!'
-                })
-            }
-        }
-    }
-
     const handleUpdateQuantity = async () => {
         const { value: newQuantity } = await Swal.fire({
             title: 'Nhập tồn kho mới',
@@ -171,11 +137,6 @@ const ProductAdmin = (props) => {
                         <td className="text-danger fw-bold col-price">
                             <p className='d-flex align-items-center justify-content-center'>
                                 {addPointToPrice(props.price)}
-                                <a href="#" onClick={handleUpdatePrice}>
-                                    <span className="edit-price-button text-premium">
-                                        <FaPencilAlt />
-                                    </span>
-                                </a>
                             </p>
                         </td>
                         <td className="text-danger fw-bold col-quantity">

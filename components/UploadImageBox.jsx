@@ -23,11 +23,17 @@ const UploadImageBox = ({ index, listProductVariant, setListProductVariant }) =>
         setPreviewOpen(true);
         setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
     };
+
     const handleChange = ({ fileList }) => {
         let listProductVariantClone = [ ...listProductVariant ];
-        listProductVariantClone[index].fileList = fileList;
+        let fileListClone = [ ...fileList ];
+        for( let i=0; i < fileListClone.length; i++ ) {
+            fileListClone[i].status = 'done';
+        }
+        listProductVariantClone[index].fileList = fileListClone;
         setListProductVariant(listProductVariantClone);
     };
+    
     const uploadButton = (
         <div>
             <span>Thêm</span>
@@ -44,6 +50,7 @@ const UploadImageBox = ({ index, listProductVariant, setListProductVariant }) =>
                 fileList={listProductVariant[index].fileList}
                 onPreview={handlePreview}
                 onChange={handleChange}
+                multiple={true}
             >
                 {listProductVariant[index].fileList.length >= 6 ? null : uploadButton}
             </Upload>

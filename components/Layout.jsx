@@ -4,11 +4,12 @@ import Router, { useRouter } from 'next/router'
 import { useSelector } from 'react-redux'
 
 const Layout = ({ children }) => {
-  const prams = useRouter()
-  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+  const params = useRouter()
+  const isLoggedIn = useSelector((state) => state.admin.isLoggedIn);
+  const admin = useSelector((state) => state);
 
   useEffect(() => {
-    console.log(isLoggedIn);
+    console.log("Layout đã check trạng thái của user. Trạng thái hiện tại là: " + JSON.stringify(admin));
     if (!isLoggedIn) {
       Router.push('/login')
     }
@@ -17,7 +18,7 @@ const Layout = ({ children }) => {
   return (
     <>
       {
-        prams.pathname === '/login'
+        params.pathname === '/login'
           ? children : isLoggedIn && (
             <div className="overflow-hidden">
               <div className='row'>

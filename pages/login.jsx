@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
+import Router from 'next/router'
+import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios'
+import { swtoast } from '@/mixins/swal.mixin'
+
 import Heading from '@/components/Heading'
 import { homeAPI } from '@/config'
-import Router from 'next/router'
-import { swtoast } from '@/mixins/swal.mixin'
-import axios from 'axios'
-import { useDispatch } from 'react-redux';
-import * as actions from '../actions';
+import * as actions from '../store/actions';
 
 const login = () => {
     const [email, setEmail] = useState('')
@@ -13,7 +14,14 @@ const login = () => {
     const emailRef = useRef()
     const passwordRef = useRef()
 
+    const isLoggedIn = useSelector((state) => state.admin.isLoggedIn);
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (isLoggedIn) {
+          Router.back()
+        }
+      }, [isLoggedIn])
 
     useEffect(() => {
         emailRef.current.focus()
@@ -22,17 +30,13 @@ const login = () => {
     const handleLogin = async (e) => {
         e.preventDefault()
         if (!email) {
-            swtoast.fire({
-                text: "Please enter your email"
-            })
+            swtoast.fire({ text: "Please enter your email" })
             emailRef.current.focus()
             return
         }
 
         if (!password) {
-            swtoast.fire({
-                text: "Please enter your password"
-            })
+            swtoast.fire({ text: "Please enter your password" })
             passwordRef.current.focus()
             return
         }
@@ -42,17 +46,12 @@ const login = () => {
                 email: email,
                 password: password
             })
-            swtoast.success({
-                text: "Đăng nhập thành công"
-            })
-
-            const { data } = response
-            console.log(data);
-
-            dispatch(actions.userLoginSuccess(data));
-
+            
+            dispatch(actions.adminLoginOrRegister(response.data));
+            
             setEmail('')
             setPassword('')
+            swtoast.success({ text: "Đăng nhập thành công" })
             Router.push('/')
         } catch (error) {
             swtoast.error({

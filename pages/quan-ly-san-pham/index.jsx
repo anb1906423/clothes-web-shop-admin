@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import Header from '@/components/Header'
 import Heading from '@/components/Heading'
 import ProductAdmin from '@/components/ProductAdmin'
 import Router from 'next/router'
 import axios from 'axios'
+
+import * as actions from '../../store/actions';
 
 const fakeData = [
     {
@@ -26,6 +29,7 @@ const fakeData = [
 
 const ProductManager = () => {
     let [listProductVariant, setListProductVariant] = useState([]);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const getListProductVariant = async () => {
@@ -45,6 +49,10 @@ const ProductManager = () => {
         setListProductVariant(result.data)
     }
 
+    const handleLogout = () => {
+        dispatch(actions.adminLogOut());
+    }
+
     return (
         <div className="product-manager">
             <Header title="Product Management" />
@@ -52,6 +60,9 @@ const ProductManager = () => {
                 <div className="to-add-product-page">
                     <button onClick={() => Router.push('/quan-ly-san-pham/tao-san-pham')} className="to-add-product-page-btn">
                         Thêm sản phẩm
+                    </button>
+                    <button onClick={() => handleLogout()} className="to-add-product-page-btn">
+                        Log Out
                     </button>
                 </div>
                 <Heading title="Tất cả sản phẩm" />

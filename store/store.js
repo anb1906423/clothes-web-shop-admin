@@ -1,7 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
-import thunkMiddleware from 'redux-thunk';
-
 import { persistStore } from 'redux-persist';
+import thunkMiddleware from 'redux-thunk';
 
 import createRootReducer from './reducers/rootReducer';
 
@@ -17,7 +16,7 @@ const middleware = [thunkMiddleware];
 const reduxStore = configureStore({
     reducer: rootReducer,
     middleware: middleware,
-    devTools: isDevelopment,
+    devTools: isDevelopment, // Trường devTools này dùng để làm gì
 });
 
 export const dispatch = reduxStore.dispatch;

@@ -2,10 +2,10 @@ import '../styles/globals.scss'
 import 'bootstrap/dist/css/bootstrap.css'
 import Script from 'next/script'
 import { useEffect } from 'react'
-
 import dynamic from 'next/dynamic'
-import store from '@/store'
 import { Provider } from 'react-redux'
+
+import store from '../store/store'
 
 const Layout = dynamic(() => import('../components/Layout'), {
   ssr: false,

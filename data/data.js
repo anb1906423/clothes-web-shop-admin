@@ -7,35 +7,24 @@ export const menu = [
         ],
     },
     {
-        title: 'User profile',
-        href: '/user-profile',
+        title: 'Quản lý danh mục',
+        href: '/dashboard',
         list: [
 
         ],
     },
     {
         title: 'Quản lý sản phẩm',
-        href: '/quan-ly-san-pham',
+        href: '/product/manage',
         list: [
 
         ],
     },
     {
-        title: 'Quản lý danh mục',
-        href: '#',
+        title: 'Quản lý đơn hàng',
+        href: '/order/manage',
         list: [
-            {
-                title: 'Màu sắc',
-                href: '/quan-ly-danh-muc/mau-sac'
-            },
-            {
-                title: 'Bảng size',
-                href: '/quan-ly-danh-muc/bang-size'
-            },
-            {
-                title: 'Comments',
-                href: '/quan-ly-danh-muc/comments'
-            },
+
         ],
     },
 ]

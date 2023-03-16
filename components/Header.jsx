@@ -6,10 +6,10 @@ import { Button, Divider, Radio, Space } from 'antd';
 
 const Header = (props) => {
   const dispatch = useDispatch()
-  const userInfo = useSelector((state) => state.user.userInfo)
+  const adminInfo = useSelector((state) => state.admin.adminInfo)
 
   useEffect(() => {
-    console.log(userInfo);
+    console.log(adminInfo);
   })
 
   return (
@@ -27,7 +27,7 @@ const Header = (props) => {
               border: "1.5px solid #000",
             }}
           >
-            {userInfo.email}
+            {adminInfo.email}
           </Button>
         </div>
         <div className="logout-box">

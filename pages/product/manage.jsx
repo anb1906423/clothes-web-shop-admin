@@ -15,7 +15,7 @@ const fakeData = [
         product_name: 'Áo Thun Active ProMax',
         product_image: 'https://media.istockphoto.com/id/991436974/vi/vec-to/m%E1%BB%99t-s%E1%BB%91-th%C3%B9ng-h%C3%A0ng-gi%E1%BA%A5y-%C4%91%C6%B0%E1%BB%A3c-v%E1%BA%ADn-chuy%E1%BB%83n-b%E1%BA%B1ng-tr%E1%BB%B1c-th%C4%83ng-h%C3%ACnh-minh-h%E1%BB%8Da-vector.jpg?s=2048x2048&w=is&k=20&c=fEuc9_188HXkaeQdyWa6mVA4EUuAk4eyxia8-0x4Tg8=',
         colour_name: 'Trắng', size_name: 'S',
-        price: 0, quantity: 0, state: true, created_at: '22/12/2022'
+        price: 0, quantity: 0, state: true, created_at: '2023-03-04T03:50:21.000Z'
     },
     {
         product_id: 1,
@@ -23,7 +23,7 @@ const fakeData = [
         product_name: 'Áo Thun Active ProMax',
         product_image: 'https://media.istockphoto.com/id/991436974/vi/vec-to/m%E1%BB%99t-s%E1%BB%91-th%C3%B9ng-h%C3%A0ng-gi%E1%BA%A5y-%C4%91%C6%B0%E1%BB%A3c-v%E1%BA%ADn-chuy%E1%BB%83n-b%E1%BA%B1ng-tr%E1%BB%B1c-th%C4%83ng-h%C3%ACnh-minh-h%E1%BB%8Da-vector.jpg?s=2048x2048&w=is&k=20&c=fEuc9_188HXkaeQdyWa6mVA4EUuAk4eyxia8-0x4Tg8=',
         colour_name: 'Trắng', size_name: 'S',
-        price: 0, quantity: 0, state: false, created_at: '22/12/2022'
+        price: 0, quantity: 0, state: false, created_at: '2023-03-04T03:50:21.000Z'
     },
 ];
 
@@ -36,7 +36,7 @@ const ProductManager = () => {
             try {
                 const result = await axios.get('http://localhost:8080/api/product/admin/list')
                 setListProductVariant(result.data)
-            } catch(err) {
+            } catch (err) {
                 console.log(err);
                 setListProductVariant(fakeData);
             }
@@ -49,20 +49,13 @@ const ProductManager = () => {
         setListProductVariant(result.data)
     }
 
-    const handleLogout = () => {
-        dispatch(actions.adminLogOut());
-    }
-
     return (
         <div className="product-manager">
-            <Header title="Product Management" />
+            <Header title="Quản lý sản phẩm" />
             <div className="wrapper manager-box">
                 <div className="to-add-product-page">
                     <button onClick={() => Router.push('/quan-ly-san-pham/tao-san-pham')} className="to-add-product-page-btn">
                         Thêm sản phẩm
-                    </button>
-                    <button onClick={() => handleLogout()} className="to-add-product-page-btn">
-                        Log Out
                     </button>
                 </div>
                 <Heading title="Tất cả sản phẩm" />
@@ -74,11 +67,11 @@ const ProductManager = () => {
                                     <input type="checkbox" />
                                 </th>
                                 <th title='Tên sản phẩm' className="name col-infor-product">
-                                    Tên
+                                    Sản phẩm
                                 </th>
                                 <th title='Giá sản phẩm' className="col-price">Giá</th>
                                 <th title='Tồn kho' className="col-quantity">Tồn kho</th>
-                                <th title="Thời gian tạo" className="col-createAt">Thời gian tạo</th>
+                                <th title="Thời gian tạo" className="col-createAt">Ngày tạo</th>
                                 <th title="Trạng thái" className="col-state">Trạng thái</th>
                                 <th title="Thao tác" className="col-action manipulation">Thao tác</th>
                             </tr>

@@ -22,8 +22,11 @@ const ProductAdmin = (props) => {
         const seconds = date.getSeconds(); // giây
         const formattedDate = `${day}/${month}/${year}`;
         const formattedTime = `${hours}:${minutes}:${seconds}`;
-        const formattedDateTime = `${formattedDate} ${formattedTime}`;
-        return formattedDateTime
+        return (
+            <>
+                {formattedDate} <br /> {formattedTime}
+            </>
+        )
     }
 
     const handleUpdateQuantity = async () => {
@@ -105,7 +108,7 @@ const ProductAdmin = (props) => {
                 if (result.isConfirmed) {
                     try {
                         await axios.delete('http://localhost:8080/api/product-variant/delete',
-                            { data: { product_variant_ids: [props.product_variant_id] }})
+                            { data: { product_variant_ids: [props.product_variant_id] } })
                         props.refreshProductVariantTable()
                         swtoast.success({
                             text: 'Xóa biến thể sản phẩm thành công!'
@@ -158,7 +161,7 @@ const ProductAdmin = (props) => {
                         <td className="col-action manipulation">
                             <a href="#">Chỉnh sửa</a>
                             <br />
-                            <FaTrash style={{cursor: "pointer"}} title='Xóa' className="text-danger" onClick={() => handleDelete()} />
+                            <FaTrash style={{ cursor: "pointer" }} title='Xóa' className="text-danger" onClick={() => handleDelete()} />
                         </td>
                     </tr>
                 </tbody>

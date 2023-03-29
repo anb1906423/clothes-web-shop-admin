@@ -1,7 +1,7 @@
 export const menu = [
     {
         title: 'Quản lý danh mục',
-        href: '/dashboard',
+        href: '/category',
         list: [
 
         ],

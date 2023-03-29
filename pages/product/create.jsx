@@ -8,6 +8,7 @@ import SizeBox from '@/components/SizeBox';
 import Category from '@/components/Category';
 import RowProductVariant from '@/components/RowProductVariant';
 import CKeditor from '@/components/CKEditor';
+import { Input } from 'antd'
 
 const CreateNewProduct = () => {
     const [product_name, setProduct_name] = useState('');
@@ -20,10 +21,15 @@ const CreateNewProduct = () => {
 
     const [listProductVariant, setListProductVariant] = useState([]);
     const [rowProductVariant, setRowProductVariant] = useState([]);
+    const [globalQuantity, setGlobalQuantity] = useState('')
 
     useEffect(() => {
         setEditorLoaded(true);
     }, []);
+
+    useEffect(() => {
+        console.log(listProductVariant);
+    })
 
     useEffect(() => {
         let listProductVariantTemp = [];
@@ -41,15 +47,15 @@ const CreateNewProduct = () => {
             }
         }
         setListProductVariant(listProductVariantTemp);
-        
+
     }, [selectedColours, selectedSizes]);
 
     useEffect(() => {
         let rowProductVariantTemp = [];
         for (let i in listProductVariant) {
             rowProductVariantTemp.push(
-                <RowProductVariant 
-                    key={i} 
+                <RowProductVariant
+                    key={i}
                     index={i}
                     listProductVariant={listProductVariant}
                     setListProductVariant={setListProductVariant}
@@ -57,7 +63,7 @@ const CreateNewProduct = () => {
             );
         }
         setRowProductVariant(rowProductVariantTemp);
-    }, [ listProductVariant ]);
+    }, [listProductVariant]);
 
     const createProduct = async () => {
         try {
@@ -93,9 +99,16 @@ const CreateNewProduct = () => {
         }
     }
 
+    useEffect(() => {
+        for (let productVariant of listProductVariant) {
+            productVariant.quantity = globalQuantity
+            console.log(productVariant);
+        }
+    }, [globalQuantity])
+
     return (
         <div className='add-product-page'>
-            <Header title="Add Product" />
+            <Header title="Thêm sản phẩm" />
             {/* // Input Ten san pham */}
             <div className="add-product-form">
                 <div className="name-product-box row">
@@ -113,13 +126,13 @@ const CreateNewProduct = () => {
                 {/* // Component danh muc */}
                 <div className="category-box row">
                     <div className="col-6">
-                        <label htmlFor='enter-name' className="fw-bold">Danh mục:</label>
-                        <Category category_id={category_id} setCategory_id={setCategory_id} />
+                        <label htmlFor='category' className="fw-bold">Danh mục:</label>
+                        <Category id="category" category_id={category_id} setCategory_id={setCategory_id} />
                     </div>
                     <div className="col-6">
                         <label htmlFor='enter-price' className="fw-bold">Giá sản phẩm:</label>
                         <input
-                            id='enter-name'
+                            id='enter-price'
                             type="number" min={0} max={10000000}
                             className="w-100"
                             placeholder='Nhập giá sản phẩm'
@@ -129,7 +142,7 @@ const CreateNewProduct = () => {
                 </div>
                 {/* // Mo ta san pham = CKEditor */}
                 <div className="description">
-                    <label htmlFor='enter-name' className="fw-bold">Mô tả sản phẩm:</label>
+                    <label htmlFor='description' className="fw-bold">Mô tả sản phẩm:</label>
                     <div className="ckeditor-box">
                         <CKeditor
                             Placeholder={{ placeholder: "Mô tả ..." }}
@@ -155,10 +168,31 @@ const CreateNewProduct = () => {
                 {/* dung Selected colour va Seleted size de tao bang Product-Variant */}
                 <div className="selected-table">
                     <label htmlFor='enter-name' className="fw-bold">Danh sách lựa chọn:</label>
-                    <table className="table table-hover">
+                    <div className="row">
+                        <div className="col-6">
+                            {
+                                rowProductVariant.length > 0 ?
+                                    <div className="d-flex">
+                                        <label className="col-6 fw-bold" htmlFor="global-quantity-input">Nhập tồn kho:</label>
+                                        <Input
+                                            className='col-6'
+                                            id='global-quantity-input'
+                                            placeholder="Nhập tồn kho"
+                                            value={globalQuantity}
+                                            type="number"
+                                            onChange={(e) => setGlobalQuantity(e.target.value)}
+                                            style={{
+                                                margin: "0 0 16px"
+                                            }}
+                                        />
+                                    </div> : ''
+                            }
+                        </div>
+                    </div>
+                    <table className="table w-100 table-hover align-middle table-bordered">
                         <thead>
                             <tr className=''>
-                                <th scope="col"><input type="checkbox"/></th>
+                                <th scope="col"><input type="checkbox" /></th>
                                 <th scope="col">Màu</th>
                                 <th scope="col">Size</th>
                                 <th scope="col">Tồn kho</th>
@@ -171,7 +205,7 @@ const CreateNewProduct = () => {
                     </table>
                 </div>
                 <div className="btn-box text-left">
-                    <button className='text-light' onClick={() => createProduct()}>
+                    <button className='text-light bg-dark' onClick={() => createProduct()}>
                         Thêm sản phẩm
                     </button>
                 </div>

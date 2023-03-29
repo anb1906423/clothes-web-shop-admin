@@ -1,5 +1,11 @@
 .add-product-page {
     margin-right: 8px;
+    .add-product-form {
+        label {
+            font-size: 18px;
+            margin: 6px 0px 4px 0;
+        }
+    }
     .searchWrapper {
         max-height: 38.33px;
         overflow: hidden;

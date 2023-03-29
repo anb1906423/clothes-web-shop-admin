@@ -50,7 +50,7 @@ const Category = ({ category_id, setCategory_id }) => {
     }, [])
 
     return (
-        <div className='category col-6'>
+        <div className='category col-12'>
             <div className="">
                 <select value={category_id} onChange={(e) => setCategory_id(e.target.value)}>
                 <option disabled={true} value="">--Chọn danh mục sản phẩm--</option>

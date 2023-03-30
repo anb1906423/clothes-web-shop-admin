@@ -54,7 +54,7 @@ const ProductManager = () => {
             <Header title="Quản lý sản phẩm" />
             <div className="wrapper manager-box">
                 <div className="to-add-product-page">
-                    <button onClick={() => Router.push('/quan-ly-san-pham/tao-san-pham')} className="to-add-product-page-btn">
+                    <button onClick={() => Router.push('/product/create')} className="to-add-product-page-btn">
                         Thêm sản phẩm
                     </button>
                 </div>

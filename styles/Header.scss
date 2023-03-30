@@ -1,6 +1,7 @@
 .header {
     height: var(--height-header);
     position: relative;
+
     .title-header {
         font-weight: bold;
         font-size: 22px;
@@ -9,6 +10,7 @@
     .account-box {
         margin: 0 22px;
         padding: 12px;
+
         .logout-box {
             padding-left: 12px;
         }

@@ -1,55 +1,38 @@
 import React from 'react';
+import { InputNumber } from 'antd'
 
-import UploadImageBoxox from '@/components/UploadImageBox';
+import UploadImageBox from '@/components/UploadImageBox';
 
-const RowProductVariant = ({ index, listProductVariant, setListProductVariant }) => {
+const RowProductVariant = ({ index, productVariantList, setProductVariantList }) => {
 
-    // const createProductVariant = async () => {
-    //     let dataProductVariant = new FormData();
-    //     dataProductVariant.append('price', price);
-    //     dataProductVariant.append('quantity', quantity);
-    //     dataProductVariant.append('product_id', product_id);
-    //     dataProductVariant.append('colour_id', colour_id);
-    //     dataProductVariant.append('size_id', size_id);
-    //     for (let file of inputImageFile.current.files)
-    //         dataProductVariant.append('product_images', file);
-    //     try {
-    //         let result = await axios.post(
-    //             'http://localhost:8080/api/product-variant/create',
-    //             dataProductVariant,
-    //             {
-    //                 headers: { 'Content-Type': 'multipart/form-data' }
-    //             }
-    //         );
-    //     } catch (e) {
-    //         console.log(e);
-    //     }
-    // }
-
-    const handlePriceChance = (e) => {
-        let listProductVariantClone = [ ...listProductVariant ];
-        listProductVariantClone[index].quantity = e.target.value;
-        setListProductVariant(listProductVariantClone);
+    const handlePriceChance = (value) => {
+        let productVariantListClone = [...productVariantList];
+        productVariantListClone[index].quantity = value;
+        setProductVariantList(productVariantListClone);
     }
 
     return (
         <>
-            <tr className='row-product-admin'>
-                <td><input type="checkbox"/></td>
-                <td>
-                    {listProductVariant[index].colour_name}
+            <tr className='row-product-variant'>
+                <td className='col-checkbox text-center'><input type="checkbox" /></td>
+                <td className='col-colour text-center'>
+                    {productVariantList[index].colour_name}
                 </td>
-                <td>
-                    {listProductVariant[index].size_name}
+                <td className='col-size text-center'>
+                    {productVariantList[index].size_name}
                 </td>
-                <td>
-                    <input type="number" value={listProductVariant[index].quantity} onChange={handlePriceChance} />
+                <td className='col-quantity text-center'>
+                    <InputNumber
+                        value={productVariantList[index].quantity}
+                        style={{ width: '100%' }}
+                        onChange={handlePriceChance}
+                    />
                 </td>
-                <td className="d-flex justify-content-left align-items-center">
-                    <UploadImageBoxox 
+                <td className="col-image">
+                    <UploadImageBox
                         index={index}
-                        listProductVariant={listProductVariant}
-                        setListProductVariant={setListProductVariant}
+                        productVariantList={productVariantList}
+                        setProductVariantList={setProductVariantList}
                     />
                 </td>
             </tr>

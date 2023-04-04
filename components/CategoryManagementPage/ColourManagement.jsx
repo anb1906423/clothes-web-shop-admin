@@ -78,7 +78,7 @@ const ColourManage = () => {
             </div>
             <div className='table-container' style={{ height: "220px" }}>
                 <table className='table table-hover table-bordered'>
-                    <thead className='sticky-top bg-light'>
+                    <thead>
                         <tr>
                             <th className='text-center'>STT</th>
                             <th>

@@ -1,38 +1,35 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Router from 'next/router';
+import { Input, InputNumber, Empty } from 'antd'
 
 import Header from '@/components/Header';
+import Category from '@/components/Category';
 import ColourBox from '@/components/ColourBox';
 import SizeBox from '@/components/SizeBox';
-import Category from '@/components/Category';
-import RowProductVariant from '@/components/RowProductVariant';
 import CKeditor from '@/components/CKEditor';
-import { Input } from 'antd'
+import RowProductVariant from '@/components/RowProductVariant';
+import { swtoast } from "@/mixins/swal.mixin";
 
-const CreateNewProduct = () => {
-    const [product_name, setProduct_name] = useState('');
-    const [category_id, setCategory_id] = useState('');
+const CreateProductPage = () => {
+    const [productName, setProductName] = useState('');
+    const [categoryId, setCategoryId] = useState('');
     const [price, setPrice] = useState(0);
     const [description, setDescription] = useState('')
     const [selectedColours, setSelectedColours] = useState([]);
     const [selectedSizes, setSelectedSizes] = useState([]);
     const [editorLoaded, setEditorLoaded] = useState(false);
 
-    const [listProductVariant, setListProductVariant] = useState([]);
+    const [productVariantList, setProductVariantList] = useState([]);
     const [rowProductVariant, setRowProductVariant] = useState([]);
-    const [globalQuantity, setGlobalQuantity] = useState('')
+    // const [globalQuantity, setGlobalQuantity] = useState('')
 
     useEffect(() => {
         setEditorLoaded(true);
     }, []);
 
     useEffect(() => {
-        console.log(listProductVariant);
-    })
-
-    useEffect(() => {
-        let listProductVariantTemp = [];
+        let productVariantListTemp = [];
         for (let i in selectedColours) {
             for (let y in selectedSizes) {
                 let productVariant = {
@@ -43,100 +40,134 @@ const CreateNewProduct = () => {
                     quantity: '',
                     fileList: []
                 }
-                listProductVariantTemp.push(productVariant);
+                productVariantListTemp.push(productVariant);
             }
         }
-        setListProductVariant(listProductVariantTemp);
+        setProductVariantList(productVariantListTemp);
 
     }, [selectedColours, selectedSizes]);
 
     useEffect(() => {
         let rowProductVariantTemp = [];
-        for (let i in listProductVariant) {
+        for (let i in productVariantList) {
             rowProductVariantTemp.push(
                 <RowProductVariant
                     key={i}
                     index={i}
-                    listProductVariant={listProductVariant}
-                    setListProductVariant={setListProductVariant}
+                    productVariantList={productVariantList}
+                    setProductVariantList={setProductVariantList}
                 />
             );
         }
         setRowProductVariant(rowProductVariantTemp);
-    }, [listProductVariant]);
+    }, [productVariantList]);
 
     const createProduct = async () => {
-        try {
-            let newProduct = {
-                product_name,
-                price,
-                category_id,
-                description
-            }
-            let result = await axios.post('http://localhost:8080/api/product/create', newProduct);
-            console.log(result.data);
-            let product_id = result.data.product_id;
-            for (let productVariant of listProductVariant) {
-                let dataProductVariant = new FormData();
-                dataProductVariant.append('product_id', product_id);
-                dataProductVariant.append('colour_id', productVariant.colour_id);
-                dataProductVariant.append('size_id', productVariant.size_id);
-                dataProductVariant.append('quantity', productVariant.quantity);
-                for (let file of productVariant.fileList)
-                    dataProductVariant.append('product_images', file.originFileObj);
-                let result = await axios.post(
-                    'http://localhost:8080/api/product-variant/create',
-                    dataProductVariant,
-                    {
-                        headers: { 'Content-Type': 'multipart/form-data' }
-                    }
-                );
+        if (Validate()) {
+            try {
+                let newProduct = {
+                    product_name: productName,
+                    price,
+                    category_id: categoryId,
+                    description
+                }
+                let result = await axios.post('http://localhost:8080/api/product/create', newProduct);
                 console.log(result.data);
+                let product_id = result.data.product_id;
+                for (let productVariant of productVariantList) {
+                    let dataProductVariant = new FormData();
+                    dataProductVariant.append('product_id', product_id);
+                    dataProductVariant.append('colour_id', productVariant.colour_id);
+                    dataProductVariant.append('size_id', productVariant.size_id);
+                    dataProductVariant.append('quantity', productVariant.quantity);
+                    for (let file of productVariant.fileList)
+                        dataProductVariant.append('product_images', file.originFileObj);
+                    let result = await axios.post(
+                        'http://localhost:8080/api/product-variant/create',
+                        dataProductVariant,
+                        {
+                            headers: { 'Content-Type': 'multipart/form-data' }
+                        }
+                    );
+                    console.log(result.data);
+                }
+                Router.push('/product/manage')
+            } catch (err) {
+                console.log(err);
             }
-            Router.push('/quan-ly-san-pham');
-        } catch (err) {
-            console.log(err);
         }
     }
 
-    useEffect(() => {
-        for (let productVariant of listProductVariant) {
-            productVariant.quantity = globalQuantity
-            console.log(productVariant);
+    const Validate = () => {
+        if (!productName) {
+            swtoast.error({ text: 'Tên sản phẩm không được bỏ trống' })
+            return false
         }
-    }, [globalQuantity])
+        if (!categoryId) {
+            swtoast.error({ text: 'Danh mục sản phẩm không được bỏ trống' })
+            return false
+        }
+        if (!price) {
+            swtoast.error({ text: 'Giá sản phẩm không được bỏ trống' })
+            return false
+        }
+        if (!description) {
+            swtoast.error({ text: 'Mô tả sản phẩm không được bỏ trống' })
+            return false
+        }
+        if (!productVariantList.length) {
+            swtoast.error({ text: 'Sản phẩm phải có ít nhất 1 biến thể' })
+            return false
+        }
+        for (const productVariant of productVariantList) {
+            if (!productVariant.quantity) {
+                swtoast.error({ text: 'Biến thể sản phẩm phải có ít nhất một tồn kho' })
+                return false
+            }
+            if (!productVariant.fileList.length) {
+                swtoast.error({ text: 'Biến thể sản phẩm phải có ít nhất một ảnh' })
+                return false
+            }
+        }
+        return true
+    }
+
+    // useEffect(() => {
+    //     for (let productVariant of listProductVariant) {
+    //         productVariant.quantity = globalQuantity
+    //         console.log(productVariant);
+    //     }
+    // }, [globalQuantity])
 
     return (
-        <div className='add-product-page'>
+        <div className='create-product-page'>
             <Header title="Thêm sản phẩm" />
-            {/* // Input Ten san pham */}
-            <div className="add-product-form">
-                <div className="name-product-box row">
+            <div className="create-product-form">
+                {/* // Input Ten san pham */}
+                <div className="row">
                     <div className="col-6">
-                        <label htmlFor='enter-name' className="fw-bold">Tên sản phẩm:</label>
-                        <input
-                            id='enter-name'
-                            type="text"
-                            className="w-100"
-                            placeholder='Nhập tên sản phẩm'
-                            onChange={(e) => setProduct_name(e.target.value)}
+                        <label htmlFor='product-name' className="fw-bold">Tên sản phẩm:</label>
+                        <Input
+                            id='product-name' placeholder='Nhập tên sản phẩm'
+                            value={productName}
+                            onChange={(e) => setProductName(e.target.value)}
                         />
                     </div>
                 </div>
                 {/* // Component danh muc */}
-                <div className="category-box row">
+                <div className="row">
                     <div className="col-6">
-                        <label htmlFor='category' className="fw-bold">Danh mục:</label>
-                        <Category id="category" category_id={category_id} setCategory_id={setCategory_id} />
+                        <label htmlFor='product-category' className="fw-bold">Danh mục:</label>
+                        <Category setCategoryId={setCategoryId} />
                     </div>
                     <div className="col-6">
-                        <label htmlFor='enter-price' className="fw-bold">Giá sản phẩm:</label>
-                        <input
-                            id='enter-price'
-                            type="number" min={0} max={10000000}
-                            className="w-100"
-                            placeholder='Nhập giá sản phẩm'
-                            onChange={(e) => setPrice(e.target.value)}
+                        <label htmlFor='product-price' className="fw-bold">Giá sản phẩm:</label>
+                        <br />
+                        <InputNumber
+                            id='product-price' placeholder='Nhập giá sản phẩm'
+                            value={price === 0 ? null : price}
+                            style={{ width: '100%' }}
+                            onChange={setPrice}
                         />
                     </div>
                 </div>
@@ -166,9 +197,9 @@ const CreateNewProduct = () => {
                     </div>
                 </div>
                 {/* dung Selected colour va Seleted size de tao bang Product-Variant */}
-                <div className="selected-table">
+                <div>
                     <label htmlFor='enter-name' className="fw-bold">Danh sách lựa chọn:</label>
-                    <div className="row">
+                    {/* <div className="row">
                         <div className="col-6">
                             {
                                 rowProductVariant.length > 0 ?
@@ -188,19 +219,19 @@ const CreateNewProduct = () => {
                                     </div> : ''
                             }
                         </div>
-                    </div>
+                    </div> */}
                     <table className="table w-100 table-hover align-middle table-bordered">
                         <thead>
-                            <tr className=''>
-                                <th scope="col"><input type="checkbox" /></th>
-                                <th scope="col">Màu</th>
-                                <th scope="col">Size</th>
-                                <th scope="col">Tồn kho</th>
-                                <th scope="col">Ảnh</th>
+                            <tr className='row-product-variant'>
+                                <th className='col-checkbox text-center' scope="col"><input type="checkbox" /></th>
+                                <th className='col-colour text-center' scope="col">Màu</th>
+                                <th className='col-size text-center' scope="col">Size</th>
+                                <th className='col-quantity text-center' scope="col">Tồn kho</th>
+                                <th className='col-image text-center' scope="col">Ảnh</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {rowProductVariant}
+                            {rowProductVariant.length ? rowProductVariant : <tr><td colSpan={5}><Empty /></td></tr>}
                         </tbody>
                     </table>
                 </div>
@@ -214,4 +245,4 @@ const CreateNewProduct = () => {
     )
 }
 
-export default CreateNewProduct
+export default CreateProductPage

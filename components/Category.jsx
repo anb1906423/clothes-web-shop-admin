@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Select } from 'antd';
 
-const fakeData = [
+const fakeCategoryList = [
     {
         category_id: 1,
         title: 'Áo Nam',
@@ -32,28 +33,45 @@ const fakeData = [
     }
 ];
 
-const Category = ({ category_id, setCategory_id }) => {
-    const [listCategory, setListCategory] = useState([])
+const Category = ({ setCategoryId }) => {
+    const [categoryList, setCategoryList] = useState([])
+    const [options, setOptions] = useState([])
 
     useEffect(() => {
         const fetchCategory = async () => {
             try {
                 const result = await axios.get('http://localhost:8080/api/category/list-all');
-                setListCategory(result.data)
-            } catch(err) {
+                setCategoryList(result.data)
+            } catch (err) {
                 console.log(err);
-                setListCategory(fakeData);
+                setCategoryList(fakeCategoryList);
             }
         }
 
         fetchCategory()
     }, [])
 
+    useEffect(() => {
+        let options = categoryList.map((categoryLevel1) => {
+            let categoryLevel2List = categoryLevel1.children
+            let options = categoryLevel2List.map((categoryLevel2) => {
+                let option = { label: categoryLevel2.title, value: categoryLevel2.category_id }
+                return option
+            })
+
+            return {
+                label: categoryLevel1.title,
+                options: options
+            }
+        })
+        setOptions(options)
+    }, [categoryList])
+
     return (
         <div className='category col-12'>
             <div className="">
-                <select value={category_id} onChange={(e) => setCategory_id(e.target.value)}>
-                <option disabled={true} value="">--Chọn danh mục sản phẩm--</option>
+                {/* <select value={category_id} onChange={(e) => setCategory_id(e.target.value)}>
+                    <option disabled={true} value="">--Chọn danh mục sản phẩm--</option>
                     {
                         listCategory && listCategory.map((item, index) => {
                             return (
@@ -69,7 +87,14 @@ const Category = ({ category_id, setCategory_id }) => {
                             )
                         })
                     }
-                </select>
+                </select> */}
+                <Select
+                    id='product-category'
+                    options={options}
+                    placeholder={'Chọn danh mục sản phẩm'}
+                    style={{ width: '100%' }}
+                    onChange={(value) => setCategoryId(value)}
+                />
             </div>
         </div>
     )

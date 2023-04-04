@@ -3,6 +3,7 @@ import axios from 'axios'
 import Swal from "sweetalert2";
 
 import Heading from '../Heading'
+import CreateCategoryModal from './CreateCategoryModal'
 import { swtoast } from '@/mixins/swal.mixin'
 import { homeAPI } from '@/config'
 
@@ -17,6 +18,7 @@ const fakeListCategory = [
 
 const Category = () => {
     const [categoryList, setCategoryList] = useState([])
+    const [isModalOpen, setIsModalOpen] = useState(false)
 
     useEffect(() => {
         const getAllCategory = async () => {
@@ -79,11 +81,11 @@ const Category = () => {
             <Heading title="Tất cả danh mục" />
             <div className='create-btn-container'>
                 <button className='btn btn-dark btn-sm' onClick={handleCreateCategoryLevel1}>Tạo danh mục level 1</button>
-                <button className='btn btn-dark btn-sm'>Tạo danh mục level 2</button>
+                <button className='btn btn-dark btn-sm' onClick={() => setIsModalOpen(true)}>Tạo danh mục level 2</button>
             </div>
             <div className='table-container' style={{ height: "520px" }}>
                 <table className='table  table-hover table-bordered'>
-                    <thead className='sticky-top bg-light'>
+                    <thead>
                         <tr>
                             <th className='text-center'>STT</th>
                             <th>
@@ -111,6 +113,10 @@ const Category = () => {
                     </tbody>
                 </table>
             </div>
+            <CreateCategoryModal
+                isModalOpen={isModalOpen}
+                setIsModalOpen={setIsModalOpen}
+            />
         </div>
     )
 }

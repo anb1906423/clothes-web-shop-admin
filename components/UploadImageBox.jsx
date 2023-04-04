@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Upload } from 'antd';
 
-const UploadImageBox = ({ index, listProductVariant, setListProductVariant }) => {
+const UploadImageBox = ({ index, productVariantList, setProductVariantList }) => {
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [previewTitle, setPreviewTitle] = useState('');
@@ -25,15 +25,15 @@ const UploadImageBox = ({ index, listProductVariant, setListProductVariant }) =>
     };
 
     const handleChange = ({ fileList }) => {
-        let listProductVariantClone = [ ...listProductVariant ];
-        let fileListClone = [ ...fileList ];
-        for( let i=0; i < fileListClone.length; i++ ) {
+        let productVariantListClone = [...productVariantList];
+        let fileListClone = [...fileList];
+        for (let i = 0; i < fileListClone.length; i++) {
             fileListClone[i].status = 'done';
         }
-        listProductVariantClone[index].fileList = fileListClone;
-        setListProductVariant(listProductVariantClone);
+        productVariantListClone[index].fileList = fileListClone;
+        setProductVariantList(productVariantListClone);
     };
-    
+
     const uploadButton = (
         <div>
             <span>Thêm</span>
@@ -44,18 +44,18 @@ const UploadImageBox = ({ index, listProductVariant, setListProductVariant }) =>
     );
 
     return (
-        <div style={{ width: '660px' }}>
+        <div>
             <Upload
                 listType="picture-card"
-                fileList={listProductVariant[index].fileList}
+                fileList={productVariantList[index].fileList}
                 onPreview={handlePreview}
                 onChange={handleChange}
                 multiple={true}
             >
-                {listProductVariant[index].fileList.length >= 6 ? null : uploadButton}
+                {productVariantList[index].fileList.length >= 6 ? null : uploadButton}
             </Upload>
             <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
-                <img alt="example" style={{ width: '100%',}} src={previewImage}/>
+                <img alt="example" style={{ width: '100%', }} src={previewImage} />
             </Modal>
         </div>
     )

@@ -1,39 +1,65 @@
 import React, { useState, useEffect } from 'react';
-import Multiselect from 'multiselect-react-dropdown';
+import { Select } from 'antd';
 import axios from 'axios';
 
-let fakeData = [
+let fakeSizeList = [
     { size_id: 1, size_name: 'S' }, { size_id: 2, size_name: 'M' },
     { size_id: 3, size_name: 'L' }, { size_id: 4, size_name: 'XL' },
 ];
 
 const SizeBox = ({ selectedSizes, setSelectedSizes }) => {
 
-    let [listSize, setListSize] = useState([]);
+    const [sizeList, setSizeList] = useState([]);
+    const [options, setOptions] = useState([])
 
     useEffect(() => {
         const getSizeList = async () => {
-            try {            
+            try {
                 const result = await axios.get('http://localhost:8080/api/size/list');
-                setListSize(result.data);            
-            } catch(err) {
+                setSizeList(result.data);
+            } catch (err) {
                 console.log(err);
-                setListSize(fakeData);
+                setSizeList(fakeSizeList);
             }
         }
         getSizeList();
     }, [])
 
+    useEffect(() => {
+        let options = sizeList.map((size) => {
+            return {
+                label: size.size_name,
+                value: size.size_id
+            }
+        })
+        setOptions(options)
+    }, [sizeList])
+
+    const handleOnSelect = (sizeId) => {
+        let size = sizeList.find(size => size.size_id == sizeId)
+        let selectedSizesClone = [...selectedSizes]
+        selectedSizesClone.push(size)
+        setSelectedSizes(selectedSizesClone)
+    }
+
+    const handleOnDeselect = (sizeId) => {
+        let selectedSizesClone = [...selectedSizes]
+        selectedSizesClone = selectedSizesClone.filter(size => size.size_id != sizeId)
+        setSelectedSizes(selectedSizesClone)
+    }
+
     return (
-        <div className="colour-box">
+        <div>
             <label htmlFor="enter-size" className="fw-bold">Size:</label>
-            <Multiselect
-                options={listSize}
-                selectedValues={selectedSizes}
-                onSelect={setSelectedSizes}
-                onRemove={setSelectedSizes}
-                displayValue="size_name"
-                hidePlaceholder={true}
+            <Select
+                id='enter-size'
+                mode="multiple"
+                style={{ width: '100%' }}
+                placement='bottomLeft'
+                placeholder="Chọn size"
+                onSelect={handleOnSelect}
+                onDeselect={handleOnDeselect}
+                options={options}
             />
         </div>
     )

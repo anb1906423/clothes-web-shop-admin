@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Select } from 'antd';
 
+import { homeAPI } from '@/config'
+
 const fakeCategoryList = [
     {
         category_id: 1,
@@ -33,14 +35,14 @@ const fakeCategoryList = [
     }
 ];
 
-const Category = ({ setCategoryId }) => {
+const Category = ({ setCategoryId, categoryName, setCategoryName }) => {
     const [categoryList, setCategoryList] = useState([])
     const [options, setOptions] = useState([])
 
     useEffect(() => {
         const fetchCategory = async () => {
             try {
-                const result = await axios.get('http://localhost:8080/api/category/list-all');
+                const result = await axios.get(`${homeAPI}/category/nest-list`);
                 setCategoryList(result.data)
             } catch (err) {
                 console.log(err);
@@ -70,30 +72,13 @@ const Category = ({ setCategoryId }) => {
     return (
         <div className='category col-12'>
             <div className="">
-                {/* <select value={category_id} onChange={(e) => setCategory_id(e.target.value)}>
-                    <option disabled={true} value="">--Chọn danh mục sản phẩm--</option>
-                    {
-                        listCategory && listCategory.map((item, index) => {
-                            return (
-                                <optgroup key={index} label={item.title}>
-                                    {
-                                        item.children.map((child, i) => {
-                                            return (
-                                                <option className="" key={i} value={child.category_id}>{child.title}</option>
-                                            )
-                                        })
-                                    }
-                                </optgroup>
-                            )
-                        })
-                    }
-                </select> */}
                 <Select
                     id='product-category'
+                    value={!categoryName ? null : categoryName}
                     options={options}
                     placeholder={'Chọn danh mục sản phẩm'}
                     style={{ width: '100%' }}
-                    onChange={(value) => setCategoryId(value)}
+                    onChange={(value, option) => { setCategoryId(value); setCategoryName(option.label) }}
                 />
             </div>
         </div>

@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react'
 import Link from 'next/link'
 import axios from 'axios'
-import { swalert, swtoast, showPriceInputDialog } from "../mixins/swal.mixin";
+import { swalert, swtoast } from "../mixins/swal.mixin";
 import { FaTrash, FaPencilAlt } from "react-icons/fa"
 import { Switch } from 'antd';
 import Swal from "sweetalert2";
@@ -159,7 +159,9 @@ const ProductAdmin = (props) => {
                             <Switch checked={props.state} onChange={handleUpdateState} disabled={disabledInputState} />
                         </td>
                         <td className="col-action manipulation">
-                            <a href="#">Chỉnh sửa</a>
+                            <Link href={`/product/update/${props.product_id}`}>
+                                Chỉnh sửa
+                            </Link>
                             <br />
                             <FaTrash style={{ cursor: "pointer" }} title='Xóa' className="text-danger" onClick={() => handleDelete()} />
                         </td>

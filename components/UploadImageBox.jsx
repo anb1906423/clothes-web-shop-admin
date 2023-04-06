@@ -52,7 +52,7 @@ const UploadImageBox = ({ index, productVariantList, setProductVariantList }) =>
                 onChange={handleChange}
                 multiple={true}
             >
-                {productVariantList[index].fileList.length >= 6 ? null : uploadButton}
+                {productVariantList[index].fileList && productVariantList[index].fileList.length >= 6 ? null : uploadButton}
             </Upload>
             <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
                 <img alt="example" style={{ width: '100%', }} src={previewImage} />

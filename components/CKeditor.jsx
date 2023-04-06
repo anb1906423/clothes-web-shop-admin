@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { Placeholder } from "react-bootstrap";
-export default function CKeditor({ onChange, editorLoaded, name, value, Placeholder, init }) {
+export default function CKeditor({ onChange, editorLoaded, name, data, Placeholder, init }) {
     const editorRef = useRef();
     const { CKEditor, ClassicEditor } = editorRef.current || {};
     useEffect(() => {
@@ -18,7 +18,7 @@ export default function CKeditor({ onChange, editorLoaded, name, value, Placehol
                     type=""
                     name={name}
                     editor={ClassicEditor}
-                    data={value}
+                    data={data}
                     onChange={(event, editor) => {
                         const data = editor.getData();
                         onChange(data);

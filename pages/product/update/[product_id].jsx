@@ -5,48 +5,91 @@ import { Input, InputNumber, Empty } from 'antd'
 
 import Header from '@/components/Header';
 import Category from '@/components/Category';
-import ColourBox from '@/components/ColourBox';
-import SizeBox from '@/components/SizeBox';
 import CKeditor from '@/components/CKEditor';
-import RowProductVariant from '@/components/RowProductVariant';
+import RowProductVariant from '@/components/UpdateProductPage/RowProductVariant';
 import { swtoast } from "@/mixins/swal.mixin";
+import { homeAPI } from '@/config'
 
-const CreateProductPage = () => {
+const fakeProductDetail = {
+    product_id: 1,
+    product_name: 'Áo Nam Active Pro',
+    category_id: 3,
+    category_name: 'Áo T-Shirt',
+    price: 179000,
+    description: '<h1>Đây là một cái áo<h1>',
+    product_variant_list: [
+        {
+            product_variant_id: 1,
+            colour_id: 1,
+            colour_name: 'Trắng',
+            size_id: 1,
+            size_name: 'S',
+            quantity: 4,
+            product_images: [
+                { path: 'http://localhost:8080/static/images/35bd44e7-3969-4a28-9c32-077b9f85162c.jpg' },
+                { path: 'http://localhost:8080/static/images/35bd44e7-3969-4a28-9c32-077b9f85162c.jpg' },
+                { path: 'http://localhost:8080/static/images/35bd44e7-3969-4a28-9c32-077b9f85162c.jpg' },
+            ]
+        },
+        {
+            product_variant_id: 2,
+            colour_id: 2,
+            colour_name: 'Đen',
+            size_id: 2,
+            size_name: 'M',
+            quantity: 13,
+            product_images: [
+                { path: 'http://localhost:8080/static/images/35bd44e7-3969-4a28-9c32-077b9f85162c.jpg' },
+                { path: 'http://localhost:8080/static/images/35bd44e7-3969-4a28-9c32-077b9f85162c.jpg' },
+                { path: 'http://localhost:8080/static/images/35bd44e7-3969-4a28-9c32-077b9f85162c.jpg' },
+            ]
+        },
+    ]
+}
+
+const UpdateProductPage = () => {
+    const { product_id } = Router.query
+
+    const [productId, setProductId] = useState('');
     const [productName, setProductName] = useState('');
     const [categoryId, setCategoryId] = useState('');
     const [categoryName, setCategoryName] = useState('');
     const [price, setPrice] = useState(0);
     const [description, setDescription] = useState('')
-    const [selectedColours, setSelectedColours] = useState([]);
-    const [selectedSizes, setSelectedSizes] = useState([]);
     const [editorLoaded, setEditorLoaded] = useState(false);
 
     const [productVariantList, setProductVariantList] = useState([]);
     const [rowProductVariant, setRowProductVariant] = useState([]);
-    // const [globalQuantity, setGlobalQuantity] = useState('')
 
     useEffect(() => {
         setEditorLoaded(true);
     }, []);
 
     useEffect(() => {
-        let productVariantListTemp = [];
-        for (let i in selectedColours) {
-            for (let y in selectedSizes) {
-                let productVariant = {
-                    colour_id: selectedColours[i].colour_id,
-                    colour_name: selectedColours[i].colour_name,
-                    size_id: selectedSizes[y].size_id,
-                    size_name: selectedSizes[y].size_name,
-                    quantity: '',
-                    fileList: []
-                }
-                productVariantListTemp.push(productVariant);
+        const getProductDetail = async () => {
+            try {
+                const result = await axios.get(`${homeAPI}/product/admin/detail/${product_id}`)
+                console.log(result)
+                setProductId(result.data.product_id)
+                setProductName(result.data.product_name)
+                setCategoryId(result.data.category_id)
+                setCategoryName(result.data.category_name)
+                setPrice(result.data.price)
+                setDescription(result.data.description)
+                setProductVariantList(await convertProductVariantList(result.data.product_variant_list))
+            } catch (err) {
+                console.log(err);
+                setProductId(fakeProductDetail.product_id)
+                setProductName(fakeProductDetail.product_name)
+                setCategoryId(fakeProductDetail.category_id)
+                setCategoryName(fakeProductDetail.category_name)
+                setPrice(fakeProductDetail.price)
+                setDescription(fakeProductDetail.description)
+                setProductVariantList(await convertProductVariantList(fakeProductDetail.product_variant_list))
             }
         }
-        setProductVariantList(productVariantListTemp);
-
-    }, [selectedColours, selectedSizes]);
+        if (product_id) getProductDetail()
+    }, [product_id]);
 
     useEffect(() => {
         let rowProductVariantTemp = [];
@@ -63,36 +106,73 @@ const CreateProductPage = () => {
         setRowProductVariant(rowProductVariantTemp);
     }, [productVariantList]);
 
-    const createProduct = async () => {
+    const convertProductVariantList = async (productVariantList) => {
+        let productVariantListTemp = []
+        for (let productVariant of productVariantList) {
+            let productImages = productVariant.product_images
+            let fileList = []
+            for (let { path } of productImages) {
+                try {
+                    let name = path.slice(-40, -4)
+                    let response = await fetch(path)
+                    let blob = await response.blob();
+                    const file = new File([blob], name);
+                    fileList.push({
+                        uid: name,
+                        name: name,
+                        url: path,
+                        originFileObj: file
+                    })
+                } catch (err) {
+                    console.log(err)
+                }
+            }
+            productVariantListTemp.push({
+                productVariantId: productVariant.product_variant_id,
+                colourId: productVariant.colour_id,
+                colourName: productVariant.colour_name,
+                sizeId: productVariant.size_id,
+                sizeName: productVariant.size_name,
+                quantity: productVariant.quantity,
+                fileList
+            })
+        }
+
+        return productVariantListTemp
+    }
+
+    const updateProduct = async () => {
         if (Validate()) {
             try {
-                let newProduct = {
+                let updateProduct = {
+                    product_id: productId,
                     product_name: productName,
-                    price,
                     category_id: categoryId,
+                    price,
                     description
                 }
-                let result = await axios.post('http://localhost:8080/api/product/create', newProduct);
+                let result = await axios.put(`${homeAPI}/product/update`, updateProduct);
                 console.log(result.data);
-                let product_id = result.data.product_id;
-                for (let productVariant of productVariantList) {
-                    let dataProductVariant = new FormData();
-                    dataProductVariant.append('product_id', product_id);
-                    dataProductVariant.append('colour_id', productVariant.colour_id);
-                    dataProductVariant.append('size_id', productVariant.size_id);
-                    dataProductVariant.append('quantity', productVariant.quantity);
-                    for (let file of productVariant.fileList)
-                        dataProductVariant.append('product_images', file.originFileObj);
-                    let result = await axios.post(
-                        'http://localhost:8080/api/product-variant/create',
-                        dataProductVariant,
-                        {
-                            headers: { 'Content-Type': 'multipart/form-data' }
-                        }
-                    );
-                    console.log(result.data);
-                }
-                Router.push('/product/manage')
+                swtoast.success({ text: 'Cập nhập sản phẩm thành công!' })
+                // let product_id = result.data.product_id;
+                // for (let productVariant of productVariantList) {
+                //     let dataProductVariant = new FormData();
+                //     dataProductVariant.append('product_id', product_id);
+                //     dataProductVariant.append('colour_id', productVariant.colour_id);
+                //     dataProductVariant.append('size_id', productVariant.size_id);
+                //     dataProductVariant.append('quantity', productVariant.quantity);
+                //     for (let file of productVariant.fileList)
+                //         dataProductVariant.append('product_images', file.originFileObj);
+                //     let result = await axios.post(
+                //         'http://localhost:8080/api/product-variant/create',
+                //         dataProductVariant,
+                //         {
+                //             headers: { 'Content-Type': 'multipart/form-data' }
+                //         }
+                //     );
+                //     console.log(result.data);
+                // }
+                // Router.push('/product/manage')
             } catch (err) {
                 console.log(err);
             }
@@ -133,17 +213,10 @@ const CreateProductPage = () => {
         return true
     }
 
-    // useEffect(() => {
-    //     for (let productVariant of listProductVariant) {
-    //         productVariant.quantity = globalQuantity
-    //         console.log(productVariant);
-    //     }
-    // }, [globalQuantity])
-
     return (
-        <div className='create-product-page'>
-            <Header title="Thêm sản phẩm" />
-            <div className="create-product-form">
+        <div className='update-product-page'>
+            <Header title="Cập nhật sản phẩm" />
+            <div className="update-product-form">
                 {/* // Input Ten san pham */}
                 <div className="row">
                     <div className="col-6">
@@ -189,46 +262,17 @@ const CreateProductPage = () => {
                         />
                     </div>
                 </div>
-                <div className="row">
-                    <div className="col-6">
-                        <ColourBox selectedColours={selectedColours} setSelectedColours={setSelectedColours} />
-                    </div>
-                    <div className="col-6">
-                        <SizeBox selectedSizes={selectedSizes} setSelectedSizes={setSelectedSizes} />
-                    </div>
-                </div>
                 {/* dung Selected colour va Seleted size de tao bang Product-Variant */}
                 <div>
                     <label htmlFor='enter-name' className="fw-bold">Danh sách lựa chọn:</label>
-                    {/* <div className="row">
-                        <div className="col-6">
-                            {
-                                rowProductVariant.length > 0 ?
-                                    <div className="d-flex">
-                                        <label className="col-6 fw-bold" htmlFor="global-quantity-input">Nhập tồn kho:</label>
-                                        <Input
-                                            className='col-6'
-                                            id='global-quantity-input'
-                                            placeholder="Nhập tồn kho"
-                                            value={globalQuantity}
-                                            type="number"
-                                            onChange={(e) => setGlobalQuantity(e.target.value)}
-                                            style={{
-                                                margin: "0 0 16px"
-                                            }}
-                                        />
-                                    </div> : ''
-                            }
-                        </div>
-                    </div> */}
                     <table className="table w-100 table-hover align-middle table-bordered">
                         <thead>
                             <tr className='row-product-variant'>
-                                <th className='col-checkbox text-center' scope="col"><input type="checkbox" /></th>
                                 <th className='col-colour text-center' scope="col">Màu</th>
                                 <th className='col-size text-center' scope="col">Size</th>
                                 <th className='col-quantity text-center' scope="col">Tồn kho</th>
                                 <th className='col-image text-center' scope="col">Ảnh</th>
+                                <th className='col-delete text-center' scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -237,8 +281,8 @@ const CreateProductPage = () => {
                     </table>
                 </div>
                 <div className="btn-box text-left">
-                    <button className='text-light bg-dark' onClick={() => createProduct()}>
-                        Thêm sản phẩm
+                    <button className='text-light bg-dark' onClick={updateProduct}>
+                        Cập nhật sản phẩm
                     </button>
                 </div>
             </div>
@@ -246,4 +290,4 @@ const CreateProductPage = () => {
     )
 }
 
-export default CreateProductPage
+export default UpdateProductPage

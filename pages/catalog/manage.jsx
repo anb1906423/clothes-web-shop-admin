@@ -1,9 +1,9 @@
 import React from 'react'
 
 import Header from '@/components/Header'
-import ColourManagement from '@/components/CategoryManagementPage/ColourManagement'
-import SizeManagement from '@/components/CategoryManagementPage/SizeManagement'
-import CategoryManagement from '@/components/CategoryManagementPage/CategoryManagement'
+import ColourManagement from '@/components/CatalogManagementPage/ColourManagement'
+import SizeManagement from '@/components/CatalogManagementPage/SizeManagement'
+import CategoryManagement from '@/components/CatalogManagementPage/CategoryManagement'
 
 const CatalogManagementPage = () => {
 

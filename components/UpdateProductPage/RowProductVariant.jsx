@@ -6,7 +6,7 @@ import { FaTrash } from "react-icons/fa"
 import UploadImageBox from '@/components/UploadImageBox';
 import { swalert, swtoast } from "@/mixins/swal.mixin";
 
-const RowProductVariant = ({ index, productVariantList, setProductVariantList }) => {
+const RowProductVariant = ({ index, productVariantList, setProductVariantList, setIsLoading, refreshPage }) => {
 
     const handlePriceChance = (value) => {
         let productVariantListClone = [...productVariantList];
@@ -28,6 +28,7 @@ const RowProductVariant = ({ index, productVariantList, setProductVariantList })
                     try {
                         await axios.delete('http://localhost:8080/api/product-variant/delete',
                             { data: { product_variant_ids: [productVariantList[index].productVariantId] } })
+                        refreshPage()
                         swtoast.success({
                             text: 'Xóa biến thể sản phẩm thành công!'
                         })

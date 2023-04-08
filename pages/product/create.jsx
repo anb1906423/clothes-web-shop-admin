@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Router from 'next/router';
 import { Input, InputNumber, Empty } from 'antd'
 
 import Header from '@/components/Header';
 import Category from '@/components/Category';
-import ColourBox from '@/components/ColourBox';
-import SizeBox from '@/components/SizeBox';
+import ColourBox from '@/components/CreateProductPage/ColourBox';
+import SizeBox from '@/components/CreateProductPage/SizeBox';
 import CKeditor from '@/components/CKEditor';
-import RowProductVariant from '@/components/RowProductVariant';
+import RowProductVariant from '@/components/CreateProductPage/RowProductVariant';
+import Loading from '@/components/Loading';
 import { swtoast } from "@/mixins/swal.mixin";
+import { homeAPI } from '@/config'
 
 const CreateProductPage = () => {
     const [productName, setProductName] = useState('');
@@ -18,12 +19,14 @@ const CreateProductPage = () => {
     const [price, setPrice] = useState(0);
     const [description, setDescription] = useState('')
     const [selectedColours, setSelectedColours] = useState([]);
+    const [colourBoxValue, setColourBoxValue] = useState([]);
     const [selectedSizes, setSelectedSizes] = useState([]);
+    const [sizeBoxValue, setSizeBoxValue] = useState([]);
     const [editorLoaded, setEditorLoaded] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const [productVariantList, setProductVariantList] = useState([]);
     const [rowProductVariant, setRowProductVariant] = useState([]);
-    // const [globalQuantity, setGlobalQuantity] = useState('')
 
     useEffect(() => {
         setEditorLoaded(true);
@@ -66,13 +69,14 @@ const CreateProductPage = () => {
     const createProduct = async () => {
         if (Validate()) {
             try {
+                setIsLoading(true)
                 let newProduct = {
                     product_name: productName,
                     price,
                     category_id: categoryId,
                     description
                 }
-                let result = await axios.post('http://localhost:8080/api/product/create', newProduct);
+                let result = await axios.post(`${homeAPI}/product/create`, newProduct);
                 console.log(result.data);
                 let product_id = result.data.product_id;
                 for (let productVariant of productVariantList) {
@@ -84,7 +88,7 @@ const CreateProductPage = () => {
                     for (let file of productVariant.fileList)
                         dataProductVariant.append('product_images', file.originFileObj);
                     let result = await axios.post(
-                        'http://localhost:8080/api/product-variant/create',
+                        `${homeAPI}/product-variant/create`,
                         dataProductVariant,
                         {
                             headers: { 'Content-Type': 'multipart/form-data' }
@@ -92,7 +96,9 @@ const CreateProductPage = () => {
                     );
                     console.log(result.data);
                 }
-                Router.push('/product/manage')
+                setIsLoading(false)
+                swtoast.success({ text: 'Thêm sản phẩm thành công!' })
+                clearPage()
             } catch (err) {
                 console.log(err);
             }
@@ -133,12 +139,18 @@ const CreateProductPage = () => {
         return true
     }
 
-    // useEffect(() => {
-    //     for (let productVariant of listProductVariant) {
-    //         productVariant.quantity = globalQuantity
-    //         console.log(productVariant);
-    //     }
-    // }, [globalQuantity])
+    const clearPage = () => {
+        setProductName('')
+        setCategoryId('')
+        setCategoryName('')
+        setPrice(0)
+        setDescription('')
+        setProductVariantList([])
+        setSelectedColours([])
+        setColourBoxValue([])
+        setSelectedSizes([])
+        setSizeBoxValue([])
+    }
 
     return (
         <div className='create-product-page'>
@@ -191,40 +203,28 @@ const CreateProductPage = () => {
                 </div>
                 <div className="row">
                     <div className="col-6">
-                        <ColourBox selectedColours={selectedColours} setSelectedColours={setSelectedColours} />
+                        <ColourBox
+                            selectedColours={selectedColours}
+                            setSelectedColours={setSelectedColours}
+                            colourBoxValue={colourBoxValue}
+                            setColourBoxValue={setColourBoxValue}
+                        />
                     </div>
                     <div className="col-6">
-                        <SizeBox selectedSizes={selectedSizes} setSelectedSizes={setSelectedSizes} />
+                        <SizeBox
+                            selectedSizes={selectedSizes}
+                            setSelectedSizes={setSelectedSizes}
+                            sizeBoxValue={sizeBoxValue}
+                            setSizeBoxValue={setSizeBoxValue}
+                        />
                     </div>
                 </div>
                 {/* dung Selected colour va Seleted size de tao bang Product-Variant */}
                 <div>
                     <label htmlFor='enter-name' className="fw-bold">Danh sách lựa chọn:</label>
-                    {/* <div className="row">
-                        <div className="col-6">
-                            {
-                                rowProductVariant.length > 0 ?
-                                    <div className="d-flex">
-                                        <label className="col-6 fw-bold" htmlFor="global-quantity-input">Nhập tồn kho:</label>
-                                        <Input
-                                            className='col-6'
-                                            id='global-quantity-input'
-                                            placeholder="Nhập tồn kho"
-                                            value={globalQuantity}
-                                            type="number"
-                                            onChange={(e) => setGlobalQuantity(e.target.value)}
-                                            style={{
-                                                margin: "0 0 16px"
-                                            }}
-                                        />
-                                    </div> : ''
-                            }
-                        </div>
-                    </div> */}
                     <table className="table w-100 table-hover align-middle table-bordered">
                         <thead>
                             <tr className='row-product-variant'>
-                                <th className='col-checkbox text-center' scope="col"><input type="checkbox" /></th>
                                 <th className='col-colour text-center' scope="col">Màu</th>
                                 <th className='col-size text-center' scope="col">Size</th>
                                 <th className='col-quantity text-center' scope="col">Tồn kho</th>
@@ -237,12 +237,13 @@ const CreateProductPage = () => {
                     </table>
                 </div>
                 <div className="btn-box text-left">
-                    <button className='text-light bg-dark' onClick={() => createProduct()}>
+                    <button className='text-light bg-dark' onClick={createProduct}>
                         Thêm sản phẩm
                     </button>
                 </div>
             </div>
-        </div>
+            {isLoading && <Loading />}
+        </div >
     )
 }
 

@@ -14,7 +14,6 @@ const RowProductVariant = ({ index, productVariantList, setProductVariantList })
     return (
         <>
             <tr className='row-product-variant'>
-                <td className='col-checkbox text-center'><input type="checkbox" /></td>
                 <td className='col-colour text-center'>
                     {productVariantList[index].colour_name}
                 </td>

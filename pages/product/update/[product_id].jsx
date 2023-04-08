@@ -7,6 +7,7 @@ import Header from '@/components/Header';
 import Category from '@/components/Category';
 import CKeditor from '@/components/CKEditor';
 import RowProductVariant from '@/components/UpdateProductPage/RowProductVariant';
+import Loading from '@/components/Loading';
 import { swtoast } from "@/mixins/swal.mixin";
 import { homeAPI } from '@/config'
 
@@ -57,6 +58,7 @@ const UpdateProductPage = () => {
     const [price, setPrice] = useState(0);
     const [description, setDescription] = useState('')
     const [editorLoaded, setEditorLoaded] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const [productVariantList, setProductVariantList] = useState([]);
     const [rowProductVariant, setRowProductVariant] = useState([]);
@@ -68,8 +70,8 @@ const UpdateProductPage = () => {
     useEffect(() => {
         const getProductDetail = async () => {
             try {
+                setIsLoading(true)
                 const result = await axios.get(`${homeAPI}/product/admin/detail/${product_id}`)
-                console.log(result)
                 setProductId(result.data.product_id)
                 setProductName(result.data.product_name)
                 setCategoryId(result.data.category_id)
@@ -77,8 +79,10 @@ const UpdateProductPage = () => {
                 setPrice(result.data.price)
                 setDescription(result.data.description)
                 setProductVariantList(await convertProductVariantList(result.data.product_variant_list))
+                setIsLoading(false)
             } catch (err) {
                 console.log(err);
+                Router.push("/404")
                 setProductId(fakeProductDetail.product_id)
                 setProductName(fakeProductDetail.product_name)
                 setCategoryId(fakeProductDetail.category_id)
@@ -100,6 +104,8 @@ const UpdateProductPage = () => {
                     index={i}
                     productVariantList={productVariantList}
                     setProductVariantList={setProductVariantList}
+                    setIsLoading={setIsLoading}
+                    refreshPage={refreshPage}
                 />
             );
         }
@@ -116,7 +122,7 @@ const UpdateProductPage = () => {
                     let name = path.slice(-40, -4)
                     let response = await fetch(path)
                     let blob = await response.blob();
-                    const file = new File([blob], name);
+                    const file = new File([blob], name, { type: blob.type });
                     fileList.push({
                         uid: name,
                         name: name,
@@ -141,9 +147,28 @@ const UpdateProductPage = () => {
         return productVariantListTemp
     }
 
+    const refreshPage = async () => {
+        if (product_id) {
+            try {
+                const result = await axios.get(`${homeAPI}/product/admin/detail/${product_id}`)
+                setProductId(result.data.product_id)
+                setProductName(result.data.product_name)
+                setCategoryId(result.data.category_id)
+                setCategoryName(result.data.category_name)
+                setPrice(result.data.price)
+                setDescription(result.data.description)
+                setProductVariantList(await convertProductVariantList(result.data.product_variant_list))
+            } catch (err) {
+                console.log(err);
+                Router.push("/404")
+            }
+        }
+    }
+
     const updateProduct = async () => {
         if (Validate()) {
             try {
+                setIsLoading(true)
                 let updateProduct = {
                     product_id: productId,
                     product_name: productName,
@@ -153,28 +178,27 @@ const UpdateProductPage = () => {
                 }
                 let result = await axios.put(`${homeAPI}/product/update`, updateProduct);
                 console.log(result.data);
+                for (let productVariant of productVariantList) {
+                    let dataProductVariant = new FormData();
+                    dataProductVariant.append('product_variant_id', productVariant.productVariantId);
+                    dataProductVariant.append('quantity', productVariant.quantity);
+                    for (let file of productVariant.fileList)
+                        dataProductVariant.append('product_images', file.originFileObj);
+                    let rsult = await axios.put(
+                        `${homeAPI}/product-variant/update`,
+                        dataProductVariant,
+                        {
+                            headers: { 'Content-Type': 'multipart/form-data' }
+                        }
+                    );
+                    console.log(rsult.data);
+                }
+                setIsLoading(false)
                 swtoast.success({ text: 'Cập nhập sản phẩm thành công!' })
-                // let product_id = result.data.product_id;
-                // for (let productVariant of productVariantList) {
-                //     let dataProductVariant = new FormData();
-                //     dataProductVariant.append('product_id', product_id);
-                //     dataProductVariant.append('colour_id', productVariant.colour_id);
-                //     dataProductVariant.append('size_id', productVariant.size_id);
-                //     dataProductVariant.append('quantity', productVariant.quantity);
-                //     for (let file of productVariant.fileList)
-                //         dataProductVariant.append('product_images', file.originFileObj);
-                //     let result = await axios.post(
-                //         'http://localhost:8080/api/product-variant/create',
-                //         dataProductVariant,
-                //         {
-                //             headers: { 'Content-Type': 'multipart/form-data' }
-                //         }
-                //     );
-                //     console.log(result.data);
-                // }
-                // Router.push('/product/manage')
+                refreshPage()
             } catch (err) {
                 console.log(err);
+                setIsLoading(false)
             }
         }
     }
@@ -212,6 +236,8 @@ const UpdateProductPage = () => {
         }
         return true
     }
+
+
 
     return (
         <div className='update-product-page'>
@@ -286,6 +312,7 @@ const UpdateProductPage = () => {
                     </button>
                 </div>
             </div>
+            {isLoading && <Loading />}
         </div>
     )
 }

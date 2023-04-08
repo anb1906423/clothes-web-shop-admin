@@ -7,7 +7,7 @@ let fakeSizeList = [
     { size_id: 3, size_name: 'L' }, { size_id: 4, size_name: 'XL' },
 ];
 
-const SizeBox = ({ selectedSizes, setSelectedSizes }) => {
+const SizeBox = ({ selectedSizes, setSelectedSizes, sizeBoxValue, setSizeBoxValue }) => {
 
     const [sizeList, setSizeList] = useState([]);
     const [options, setOptions] = useState([])
@@ -35,17 +35,19 @@ const SizeBox = ({ selectedSizes, setSelectedSizes }) => {
         setOptions(options)
     }, [sizeList])
 
-    const handleOnSelect = (sizeId) => {
+    const handleOnSelect = (sizeId, option) => {
         let size = sizeList.find(size => size.size_id == sizeId)
-        let selectedSizesClone = [...selectedSizes]
-        selectedSizesClone.push(size)
-        setSelectedSizes(selectedSizesClone)
+        setSelectedSizes([...selectedSizes, size])
+        setSizeBoxValue([...sizeBoxValue, option])
     }
 
-    const handleOnDeselect = (sizeId) => {
+    const handleOnDeselect = (sizeId, { value }) => {
         let selectedSizesClone = [...selectedSizes]
         selectedSizesClone = selectedSizesClone.filter(size => size.size_id != sizeId)
         setSelectedSizes(selectedSizesClone)
+        let sizeBoxValueClone = [...sizeBoxValue]
+        sizeBoxValueClone = sizeBoxValueClone.filter(option => option.value != value)
+        setSizeBoxValue(sizeBoxValueClone)
     }
 
     return (
@@ -54,6 +56,7 @@ const SizeBox = ({ selectedSizes, setSelectedSizes }) => {
             <Select
                 id='enter-size'
                 mode="multiple"
+                value={sizeBoxValue}
                 style={{ width: '100%' }}
                 placement='bottomLeft'
                 placeholder="Chọn size"

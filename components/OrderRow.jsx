@@ -204,7 +204,7 @@ const OrderRow = (props) => {
                         </td>
                         <td className="col-action manipulation">
                             {renderChangeStatusBtn()}
-                            <Link href="/order/detail">Xem chi thiết</Link>
+                            <Link href={`/order/manage/${order_id}`}>Xem chi tiết</Link>
                             {renderCancelOrderBtn()}
                         </td>
                     </tr>

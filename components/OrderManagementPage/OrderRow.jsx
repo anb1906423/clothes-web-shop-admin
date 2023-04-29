@@ -1,8 +1,7 @@
 import React, { useState, useRef } from 'react'
 import Link from 'next/link'
 import axios from 'axios'
-import { swalert, swtoast } from "../mixins/swal.mixin";
-import Swal from "sweetalert2";
+import { swalert, swtoast } from "@/mixins/swal.mixin";
 
 const OrderRow = (props) => {
     const { order_id, state_id, state_name, created_at, total_order_value, refreshOrderTable } = props;
@@ -179,9 +178,6 @@ const OrderRow = (props) => {
             <table className="table align-middle order-manage-table w-100">
                 <tbody className="w-100 text-center">
                     <tr className="w-100">
-                        <td className="col-checkbox">
-                            <input type="checkbox" />
-                        </td>
                         <td className="fw-bold col-order-id">
                             <p className="d-flex align-items-center justify-content-center">
                                 #{order_id}
@@ -204,7 +200,7 @@ const OrderRow = (props) => {
                         </td>
                         <td className="col-action manipulation">
                             {renderChangeStatusBtn()}
-                            <Link href={`/order/manage/${order_id}`}>Xem chi tiết</Link>
+                            <Link href={`/order/detail/${order_id}`}>Xem chi tiết</Link>
                             {renderCancelOrderBtn()}
                         </td>
                     </tr>

@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Select } from 'antd';
 import axios from 'axios';
 
-let fakeSizeList = [
-    { size_id: 1, size_name: 'S' }, { size_id: 2, size_name: 'M' },
-    { size_id: 3, size_name: 'L' }, { size_id: 4, size_name: 'XL' },
-];
+// let fakeSizeList = [
+//     { size_id: 1, size_name: 'S' }, { size_id: 2, size_name: 'M' },
+//     { size_id: 3, size_name: 'L' }, { size_id: 4, size_name: 'XL' },
+// ];
 
 const SizeBox = ({ selectedSizes, setSelectedSizes, sizeBoxValue, setSizeBoxValue }) => {
 
@@ -19,7 +19,7 @@ const SizeBox = ({ selectedSizes, setSelectedSizes, sizeBoxValue, setSizeBoxValu
                 setSizeList(result.data);
             } catch (err) {
                 console.log(err);
-                setSizeList(fakeSizeList);
+                // setSizeList(fakeSizeList);
             }
         }
         getSizeList();

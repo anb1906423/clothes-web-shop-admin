@@ -6,11 +6,11 @@ import Heading from '../Heading'
 import { swtoast } from '@/mixins/swal.mixin'
 import { homeAPI } from '@/config'
 
-const fakeSizeList = [
-    { size_id: 1, size_name: "S" },
-    { size_id: 2, size_name: "M" },
-    { size_id: 3, size_name: "L" },
-]
+// const fakeSizeList = [
+//     { size_id: 1, size_name: "S" },
+//     { size_id: 2, size_name: "M" },
+//     { size_id: 3, size_name: "L" },
+// ]
 
 const SizeManage = () => {
     const [sizeList, setSizeList] = useState([])
@@ -22,7 +22,7 @@ const SizeManage = () => {
                 setSizeList(result.data)
             } catch (err) {
                 console.log(err)
-                setSizeList(fakeSizeList)
+                // setSizeList(fakeSizeList)
             }
         }
         getSizeList()

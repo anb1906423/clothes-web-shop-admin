@@ -7,14 +7,14 @@ import CreateCategoryModal from './CreateCategoryModal'
 import { swtoast } from '@/mixins/swal.mixin'
 import { homeAPI } from '@/config'
 
-const fakeListCategory = [
-    { category_id: 1, title: "Áo Nam", level: 1, parent_id: null },
-    { category_id: 2, title: "Quần Nam", level: 1, parent_id: null },
-    { category_id: 3, title: "Áo T-Shirt", level: 2, parent: "Áo Nam" },
-    { category_id: 4, title: "Áo Polo", level: 2, parent: "Áo Nam" },
-    { category_id: 5, title: "Quần Jeans", level: 2, parent: "Quần Nam" },
-    { category_id: 6, title: "Quần Short", level: 2, parent: "Quần Nam" },
-]
+// const fakeListCategory = [
+//     { category_id: 1, title: "Áo Nam", level: 1, parent_id: null },
+//     { category_id: 2, title: "Quần Nam", level: 1, parent_id: null },
+//     { category_id: 3, title: "Áo T-Shirt", level: 2, parent: "Áo Nam" },
+//     { category_id: 4, title: "Áo Polo", level: 2, parent: "Áo Nam" },
+//     { category_id: 5, title: "Quần Jeans", level: 2, parent: "Quần Nam" },
+//     { category_id: 6, title: "Quần Short", level: 2, parent: "Quần Nam" },
+// ]
 
 const Category = () => {
     const [categoryList, setCategoryList] = useState([])
@@ -27,7 +27,7 @@ const Category = () => {
                 setCategoryList(result.data)
             } catch (err) {
                 console.log(err)
-                setCategoryList(fakeListCategory)
+                // setCategoryList(fakeListCategory)
             }
         }
 

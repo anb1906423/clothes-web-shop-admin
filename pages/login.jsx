@@ -8,7 +8,7 @@ import Heading from '@/components/Heading'
 import { homeAPI } from '@/config'
 import * as actions from '../store/actions';
 
-const login = () => {
+const LoginPage = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const emailRef = useRef()
@@ -19,9 +19,9 @@ const login = () => {
 
     useEffect(() => {
         if (isLoggedIn) {
-          Router.back()
+            Router.back()
         }
-      }, [isLoggedIn])
+    }, [isLoggedIn])
 
     useEffect(() => {
         emailRef.current.focus()
@@ -46,9 +46,9 @@ const login = () => {
                 email: email,
                 password: password
             })
-            
+
             dispatch(actions.adminLoginOrRegister(response.data));
-            
+
             setEmail('')
             setPassword('')
             swtoast.success({ text: "Đăng nhập thành công" })
@@ -79,7 +79,7 @@ const login = () => {
                         <input
                             placeholder='Password'
                             className='w-100'
-                            type="text"
+                            type="password"
                             ref={passwordRef}
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
@@ -94,4 +94,4 @@ const login = () => {
     )
 }
 
-export default login
+export default LoginPage

@@ -82,6 +82,7 @@ const UpdateProductPage = () => {
                 setIsLoading(false)
             } catch (err) {
                 console.log(err);
+                setIsLoading(false)
                 Router.push("/404")
                 setProductId(fakeProductDetail.product_id)
                 setProductName(fakeProductDetail.product_name)

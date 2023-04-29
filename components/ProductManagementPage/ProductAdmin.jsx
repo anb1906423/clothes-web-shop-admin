@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react'
 import Link from 'next/link'
 import axios from 'axios'
-import { swalert, swtoast } from "../mixins/swal.mixin";
+import { swalert, swtoast } from "@/mixins/swal.mixin";
 import { FaTrash, FaPencilAlt } from "react-icons/fa"
 import { Switch } from 'antd';
 import Swal from "sweetalert2";
@@ -128,9 +128,6 @@ const ProductAdmin = (props) => {
             <table className="table align-middle product-admin w-100">
                 <tbody className='w-100 text-center'>
                     <tr className="w-100">
-                        <td className="col-checkbox">
-                            <input type="checkbox" name="" id="" />
-                        </td>
                         <td className='col-infor-product'>
                             <p className="name">
                                 {props.product_name + '-' + props.colour_name + '-' + props.size_name}

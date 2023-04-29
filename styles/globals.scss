@@ -1,16 +1,17 @@
-@import "./Section.scss";
-@import "./Header.scss";
+@import "./LoginPage.scss";
 @import "./CatalogManagementPage.scss";
-@import "./ProductManager.scss";
-@import "./OrderRow.scss";
+@import "./ProductManagementPage.scss";
 @import "./CreateProductPage.scss";
 @import "./UpdateProductPage.scss";
-@import "./Category.scss";
-@import "./ProductAdmin.scss";
-@import "./Login.scss";
-@import "./Loading.scss";
+@import "./OrderDetailPage.scss";
+
+@import "./Header.scss";
+@import "./Section.scss";
 @import "./CreateCategoryModal.scss";
-@import "./orderDetail/index.scss";
+@import "./ProductAdmin.scss";
+@import "./OrderRow.scss";
+@import "./Category.scss";
+@import "./Loading.scss";
 
 * {
   margin: 0;

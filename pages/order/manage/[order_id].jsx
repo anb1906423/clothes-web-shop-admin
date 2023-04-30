@@ -28,7 +28,7 @@ const detail = () => {
           Đơn hàng #{orderDetail.order_id}
         </p>
         <p className="">
-          Ngày đặt hàng {orderDetail.created_at}
+          Ngày đặt hàng {formatAllInDate(orderDetail.created_at)}
         </p>
       </div>
       <div className="container-order-detail-page">

@@ -4,36 +4,36 @@ import { Select } from 'antd';
 
 import { homeAPI } from '@/config'
 
-const fakeCategoryList = [
-    {
-        category_id: 1,
-        title: 'Áo Nam',
-        children: [
-            {
-                category_id: 3,
-                title: 'Áo T-Shirt'
-            },
-            {
-                category_id: 4,
-                title: 'Áo Polo'
-            }
-        ]
-    },
-    {
-        category_id: 2,
-        title: 'Quần Nam',
-        children: [
-            {
-                category_id: 5,
-                title: 'Quần Short'
-            },
-            {
-                category_id: 6,
-                title: 'Quần Jeans'
-            }
-        ]
-    }
-];
+// const fakeCategoryList = [
+//     {
+//         category_id: 1,
+//         title: 'Áo Nam',
+//         children: [
+//             {
+//                 category_id: 3,
+//                 title: 'Áo T-Shirt'
+//             },
+//             {
+//                 category_id: 4,
+//                 title: 'Áo Polo'
+//             }
+//         ]
+//     },
+//     {
+//         category_id: 2,
+//         title: 'Quần Nam',
+//         children: [
+//             {
+//                 category_id: 5,
+//                 title: 'Quần Short'
+//             },
+//             {
+//                 category_id: 6,
+//                 title: 'Quần Jeans'
+//             }
+//         ]
+//     }
+// ];
 
 const Category = ({ setCategoryId, categoryName, setCategoryName }) => {
     const [categoryList, setCategoryList] = useState([])
@@ -46,7 +46,7 @@ const Category = ({ setCategoryId, categoryName, setCategoryName }) => {
                 setCategoryList(result.data)
             } catch (err) {
                 console.log(err);
-                setCategoryList(fakeCategoryList);
+                // setCategoryList(fakeCategoryList);
             }
         }
 

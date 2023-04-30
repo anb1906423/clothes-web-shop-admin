@@ -5,16 +5,16 @@ import { swtoast } from '@/mixins/swal.mixin'
 
 import { homeAPI } from '@/config'
 
-const fakeCategoryList = [
-    {
-        category_id: 1,
-        title: 'Áo Nam',
-    },
-    {
-        category_id: 2,
-        title: 'Quần Nam',
-    },
-]
+// const fakeCategoryList = [
+//     {
+//         category_id: 1,
+//         title: 'Áo Nam',
+//     },
+//     {
+//         category_id: 2,
+//         title: 'Quần Nam',
+//     },
+// ]
 
 const CreateCategoryModal = ({ isModalOpen, setIsModalOpen }) => {
 
@@ -29,7 +29,7 @@ const CreateCategoryModal = ({ isModalOpen, setIsModalOpen }) => {
                 convertCategoryList(result.data)
             } catch (err) {
                 console.log(err)
-                convertCategoryList(fakeCategoryList)
+                // convertCategoryList(fakeCategoryList)
             }
         }
         getCategoryList()

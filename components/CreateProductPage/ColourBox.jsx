@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { Select } from 'antd';
 import axios from 'axios';
 
-let fakeColourList = [
-    { colour_id: 1, colour_name: 'Trắng' }, { colour_id: 2, colour_name: 'Đen' }, { colour_id: 3, colour_name: 'Xám' },
-    { colour_id: 4, colour_name: 'Xanh' }, { colour_id: 5, colour_name: 'Đỏ' },
-];
+// let fakeColourList = [
+//     { colour_id: 1, colour_name: 'Trắng' }, { colour_id: 2, colour_name: 'Đen' }, { colour_id: 3, colour_name: 'Xám' },
+//     { colour_id: 4, colour_name: 'Xanh' }, { colour_id: 5, colour_name: 'Đỏ' },
+// ];
 
 const ColourBox = ({ selectedColours, setSelectedColours, colourBoxValue, setColourBoxValue }) => {
 
@@ -19,7 +19,7 @@ const ColourBox = ({ selectedColours, setSelectedColours, colourBoxValue, setCol
                 setColourList(result.data);
             } catch (err) {
                 console.log(err);
-                setColourList(fakeColourList);
+                // setColourList(fakeColourList);
             }
         }
         getColourList()

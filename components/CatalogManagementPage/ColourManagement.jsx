@@ -6,11 +6,11 @@ import Heading from '../Heading'
 import { swtoast } from '@/mixins/swal.mixin'
 import { homeAPI } from '@/config'
 
-const fakeColourList = [
-    { colour_id: 1, colour_name: "Trắng" },
-    { colour_id: 1, colour_name: "Đen" },
-    { colour_id: 1, colour_name: "Xanh" },
-]
+// const fakeColourList = [
+//     { colour_id: 1, colour_name: "Trắng" },
+//     { colour_id: 1, colour_name: "Đen" },
+//     { colour_id: 1, colour_name: "Xanh" },
+// ]
 
 const ColourManage = () => {
     const [colourList, setColourList] = useState([])
@@ -22,7 +22,7 @@ const ColourManage = () => {
                 setColourList(result.data)
             } catch (err) {
                 console.log(err)
-                setColourList(fakeColourList)
+                // setColourList(fakeColourList)
             }
         }
         getColourList()
